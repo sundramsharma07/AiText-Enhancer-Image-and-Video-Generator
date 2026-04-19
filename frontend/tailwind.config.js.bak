@@ -1,0 +1,51 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        background: '#FFFAF3', // Creamy white
+        surface: '#FFFFFF',
+        primary: {
+          light: '#ede9fe',
+          DEFAULT: '#8b5cf6', // Soft Purple
+          dark: '#7c3aed',
+        },
+        secondary: {
+          light: '#fff1f2',
+          DEFAULT: '#fb7185', // Coral
+          dark: '#f43f5e',
+        },
+        accent: {
+          light: '#f0fdfa',
+          DEFAULT: '#14b8a6', // Teal
+          dark: '#0d9488',
+        },
+        textMain: '#1f2937', // Deep Gray
+        textMuted: '#6b7280',
+        pastelLavender: '#E9E7FF',
+        pastelPeach: '#FFF0E5',
+        pastelBlue: '#E0F2FE',
+      },
+      fontFamily: {
+        sans: ['Inter', 'Poppins', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
+        handwriting: ['Caveat', 'cursive'],
+      },
+      animation: {
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
+        }
+      }
+    },
+  },
+  plugins: [],
+}
