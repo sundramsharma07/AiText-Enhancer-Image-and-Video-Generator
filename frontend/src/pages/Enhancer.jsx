@@ -95,20 +95,20 @@ export default function Enhancer() {
         formData.append('image', selectedImage);
         formData.append('tone', tone);
         
-       response = await fetch('https://ai-text-enhancer-288f.onrender.com/api/process-image', {
-                  method: 'POST',
-                   headers: { 'Authorization': `Bearer ${token}` },
-                     body: formData
-});
-      } else {
-        response = await fetch('https://ai-text-enhancer-288f.onrender.com/api/enhance-text', {
+        response = await fetch('http://localhost:5000/api/process-image', {
           method: 'POST',
-        headers: { 
-                   'Authorization': `Bearer ${token}`,
-                   'Content-Type': 'application/json'
-           },
-                 body: JSON.stringify({ text: rawTextInput, tone })
-});
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+      } else {
+        response = await fetch('http://localhost:5000/api/enhance-text', {
+          method: 'POST',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ text: rawTextInput, tone })
+        });
       }
 
       const data = await response.json();
