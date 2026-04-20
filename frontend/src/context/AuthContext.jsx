@@ -11,11 +11,11 @@ export const AuthProvider = ({ children }) => {
     const fetchUser = async () => {
       if (token) {
         try {
-          const response = await fetch('http://localhost:5000/api/auth/me', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+          const response = await fetch('https://ai-text-enhancer-288f.onrender.com/api/auth/me', {
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+});
           const data = await response.json();
           if (response.ok) {
             setUser(data);
