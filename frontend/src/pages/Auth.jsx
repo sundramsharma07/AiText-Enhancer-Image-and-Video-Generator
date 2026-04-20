@@ -57,11 +57,11 @@ export default function Auth() {
       : { username: name, email, password };
 
     try {
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
+      const response = await fetch(`https://ai-text-enhancer-288f.onrender.com${endpoint}`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(body)
+});
 
       const data = await response.json();
 
