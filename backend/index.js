@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: process.env.CLIENT_URL || '*',
     methods: ['GET', 'POST']
   }
 });
@@ -28,7 +28,7 @@ import generateRoutes from './routes/generate.js';
 
 // Middleware
 app.use(cors({ 
-  origin: '*', // Relaxed for debugging
+  origin: process.env.CLIENT_URL || '*', // Production URL from .env or fallback
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));

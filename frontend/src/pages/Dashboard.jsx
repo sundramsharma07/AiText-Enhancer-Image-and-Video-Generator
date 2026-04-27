@@ -38,10 +38,10 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         const [statsRes, docsRes] = await Promise.all([
-          fetch('http://localhost:5000/api/stats', {
+          fetch(`${import.meta.env.VITE_API_URL}/api/stats`, {
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('http://localhost:5000/api/documents', {
+          fetch(`${import.meta.env.VITE_API_URL}/api/documents`, {
             headers: { 'Authorization': `Bearer ${token}` }
           })
         ]);

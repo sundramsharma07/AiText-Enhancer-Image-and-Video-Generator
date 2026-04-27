@@ -64,7 +64,7 @@ export default function Settings() {
     
     setExpunging(true);
     try {
-      const response = await fetch('http://localhost:5000/api/documents-bulk', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/documents-bulk`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

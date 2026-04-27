@@ -95,13 +95,13 @@ export default function Enhancer() {
         formData.append('image', selectedImage);
         formData.append('tone', tone);
         
-        response = await fetch('http://localhost:5000/api/process-image', {
+        response = await fetch(`${import.meta.env.VITE_API_URL}/api/process-image`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` },
           body: formData
         });
       } else {
-        response = await fetch('http://localhost:5000/api/enhance-text', {
+        response = await fetch(`${import.meta.env.VITE_API_URL}/api/enhance-text`, {
           method: 'POST',
           headers: { 
             'Authorization': `Bearer ${token}`,

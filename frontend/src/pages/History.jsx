@@ -13,7 +13,7 @@ export default function History() {
 
   const fetchHistory = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/documents', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/documents`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -38,7 +38,7 @@ export default function History() {
     
     setDeletingId(id);
     try {
-      const response = await fetch(`http://localhost:5000/api/documents/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/documents/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
