@@ -36,11 +36,11 @@ function Scaffold() {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeMouseMoveListener ? window.removeMouseMoveListener('mousemove', handleMouseMove) : window.removeEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-textMain bg-app-bg relative selection:bg-primary/20">
+    <div className="min-h-[100dvh] flex flex-col font-sans text-textMain bg-app-bg relative selection:bg-primary/20 overflow-x-hidden">
       <div className="noise-overlay" />
       <div className="premium-blur" />
       <div 
