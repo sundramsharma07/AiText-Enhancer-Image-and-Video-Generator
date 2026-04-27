@@ -34,7 +34,7 @@ const SettingSection = ({ title, description, children }) => (
   </div>
 );
 
-const SettingInput = ({ label, value, type = "text", disabled = false, icon: Icon, placeholder }) => (
+const SettingInput = ({ label, value, type = "text", disabled = false, icon: Icon, placeholder, onChange, name }) => (
   <div className="flex flex-col gap-3 mb-8 last:mb-0">
     <label className="text-[10px] font-bold text-textMuted uppercase tracking-[0.2em]">{label}</label>
     <div className="relative group">
@@ -42,8 +42,10 @@ const SettingInput = ({ label, value, type = "text", disabled = false, icon: Ico
         <Icon size={18} />
       </div>
       <input 
+        name={name}
         type={type} 
         value={value} 
+        onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
         className={`w-full pl-14 pr-6 py-4 rounded-2xl border border-white/[0.08] text-sm transition-all font-medium ${
@@ -55,9 +57,46 @@ const SettingInput = ({ label, value, type = "text", disabled = false, icon: Ico
 );
 
 export default function Settings() {
-  const { user, logout, token } = useAuth();
+  const { user, setUser, logout, token } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
   const [expunging, setExpunging] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const [formData, setFormData] = useState({
+    username: user?.username || '',
+    email: user?.email || ''
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    setUpdating(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ username: formData.username })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setUser({ ...user, username: data.username });
+        alert("Identity synchronized successfully.");
+      } else {
+        alert(data.error || "Failed to update profile.");
+      }
+    } catch (error) {
+      console.error("Profile update error:", error);
+      alert("Neural link failed. Could not update identity.");
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   const handleExpunge = async () => {
     if (!window.confirm("CRITICAL ACTION: Are you sure you want to expunge your entire artistic repository? This will permanently delete all your documents. This cannot be undone.")) return;
@@ -164,16 +203,34 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                   <SettingInput label="Public Alias" value={user?.username || ""} icon={User} />
-                   <SettingInput label="Neural Email" value={user?.email || ""} icon={Mail} disabled />
-                </div>
-                
-                <div className="mt-12 flex justify-end">
-                  <button className="btn-premium px-10 py-4 shadow-2xl text-base group">
-                     Update Identity <Check size={20} className="ml-1 group-hover:scale-125 transition-transform" />
-                  </button>
-                </div>
+                <form onSubmit={handleUpdateProfile}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                     <SettingInput 
+                        name="username"
+                        label="Public Alias" 
+                        value={formData.username} 
+                        onChange={handleChange}
+                        icon={User} 
+                      />
+                     <SettingInput 
+                        name="email"
+                        label="Neural Email" 
+                        value={formData.email} 
+                        icon={Mail} 
+                        disabled 
+                      />
+                  </div>
+                  
+                  <div className="mt-12 flex justify-end">
+                    <button 
+                      type="submit"
+                      disabled={updating}
+                      className={`btn-premium px-10 py-4 shadow-2xl text-base group ${updating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                       {updating ? 'Synchronizing...' : 'Update Identity'} <Check size={20} className="ml-1 group-hover:scale-125 transition-transform" />
+                    </button>
+                  </div>
+                </form>
               </SettingSection>
 
               <SettingSection 

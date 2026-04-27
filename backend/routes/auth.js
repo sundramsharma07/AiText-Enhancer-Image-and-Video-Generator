@@ -88,4 +88,24 @@ router.get('/me', protect, async (req, res) => {
     }
 });
 
+// @route   PUT /api/auth/profile
+router.put('/profile', protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (user) {
+            user.username = req.body.username || user.username;
+            const updatedUser = await user.save();
+            res.json({
+                _id: updatedUser._id,
+                username: updatedUser.username,
+                email: updatedUser.email
+            });
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 export default router;
