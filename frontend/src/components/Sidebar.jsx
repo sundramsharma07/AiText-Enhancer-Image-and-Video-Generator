@@ -22,7 +22,6 @@ export default function Sidebar({ onClose }) {
     { name: 'Artistic Enhancer', icon: <Sparkles size={20} />, path: '/enhancer' },
     { name: 'Creative Lab', icon: <Wand2 size={20} />, path: '/creator-lab' },
     { name: 'History Archive', icon: <History size={20} />, path: '/dashboard/history' },
-    { name: 'Studio Settings', icon: <Settings size={20} />, path: '/dashboard/settings' },
   ];
 
   return (
