@@ -10,7 +10,9 @@ import {
   Plus,
   Zap,
   Wand2,
-  X
+  X,
+  Image as ImageIcon,
+  PenTool
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -21,6 +23,8 @@ export default function Sidebar({ onClose }) {
     { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard' },
     { name: 'Artistic Enhancer', icon: <Sparkles size={20} />, path: '/enhancer' },
     { name: 'Creative Lab', icon: <Wand2 size={20} />, path: '/creator-lab' },
+    { name: 'Artisan Cards', icon: <ImageIcon size={20} />, path: '/artisan-cards' },
+    { name: 'Poetry Studio', icon: <PenTool size={20} />, path: '/poetry-studio' },
     { name: 'History Archive', icon: <History size={20} />, path: '/dashboard/history' },
   ];
 

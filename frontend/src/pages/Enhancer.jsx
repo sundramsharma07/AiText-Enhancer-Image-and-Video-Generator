@@ -64,6 +64,7 @@ export default function Enhancer() {
   const [originalText, setOriginalText] = useState("");
   const [enhancedText, setEnhancedText] = useState("");
   const [tone, setTone] = useState("Professional");
+  const [currentFont, setCurrentFont] = useState("serif"); // serif, sans, script, mono
   const [copied, setCopied] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const fileInputRef = useRef(null);
@@ -179,6 +180,28 @@ export default function Enhancer() {
                   </div>
                </div>
                <h1 className="text-4xl md:text-5xl font-serif font-bold tracking-tighter">Studio Workspace</h1>
+            </div>
+
+            {/* Inspiration Cards */}
+            <div className="hidden lg:flex items-center gap-4">
+               <div className="glass-panel p-4 rounded-2xl border-white/[0.05] bg-white/[0.01] flex items-center gap-4 max-w-sm group hover:bg-white/[0.03] transition-all cursor-help">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
+                     <img src="https://gen.pollinations.ai/prompt/handwritten%20journal%20page%20aesthetic?width=100&height=100&model=flux" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  </div>
+                  <div>
+                     <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">OCR Power</p>
+                     <p className="text-[11px] text-textMuted leading-tight italic">"Convert messy journal notes into professional transcripts."</p>
+                  </div>
+               </div>
+               <div className="glass-panel p-4 rounded-2xl border-white/[0.05] bg-white/[0.01] flex items-center gap-4 max-w-sm group hover:bg-white/[0.03] transition-all cursor-help">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
+                     <img src="https://gen.pollinations.ai/prompt/elegant%20old%20letter%20aesthetic?width=100&height=100&model=flux" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  </div>
+                  <div>
+                     <p className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1">Poetic Flow</p>
+                     <p className="text-[11px] text-textMuted leading-tight italic">"Polish your drafts into poetic masterpieces in seconds."</p>
+                  </div>
+               </div>
             </div>
 
             <div className="flex flex-col items-end gap-3">
@@ -322,6 +345,27 @@ export default function Enhancer() {
                      <span className="font-serif font-bold text-xl tracking-tight">AI Canvas</span>
                   </div>
                   <div className="flex items-center gap-2">
+                      {/* Font Selector */}
+                      <div className="flex bg-white/[0.03] border border-white/[0.08] p-1 rounded-xl mr-4 hidden md:flex">
+                        {[
+                          { id: 'serif', icon: 'S', label: 'Serif' },
+                          { id: 'sans', icon: 'A', label: 'Sans' },
+                          { id: 'script', icon: '🖋️', label: 'Script' },
+                          { id: 'mono', icon: 'M', label: 'Mono' }
+                        ].map(f => (
+                          <button
+                            key={f.id}
+                            onClick={() => setCurrentFont(f.id)}
+                            className={`w-8 h-8 flex items-center justify-center rounded-lg text-[10px] font-bold transition-all ${
+                              currentFont === f.id ? 'bg-primary text-white' : 'text-textMuted hover:text-white'
+                            }`}
+                            title={f.label}
+                          >
+                            {f.icon}
+                          </button>
+                        ))}
+                      </div>
+
                      <button 
                        onClick={() => { if (enhancedText) { navigator.clipboard.writeText(enhancedText); setCopied(true); setTimeout(() => setCopied(false), 2000); } }}
                        title="Copy to Clipboard" 
@@ -377,12 +421,23 @@ export default function Enhancer() {
                           <p className="text-rose-400 font-medium mb-1 text-sm">{errorMsg || "Vision system failed to compute."}</p>
                        </motion.div>
                      )}
-                     {status === "done" && (
-                       <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="font-serif text-2xl lg:text-4xl leading-[1.6] text-white/90">
-                          <TypewriterText text={enhancedText} />
-                          <span className="cursor-blink" />
-                       </motion.div>
-                     )}
+                      {status === "done" && (
+                        <motion.div 
+                          key="content" 
+                          initial={{ opacity: 0 }} 
+                          animate={{ opacity: 1 }} 
+                          className={`text-2xl lg:text-4xl leading-[1.6] text-white/90 ${
+                            currentFont === 'serif' ? 'font-serif' : 
+                            currentFont === 'sans' ? 'font-sans' : 
+                            currentFont === 'mono' ? 'font-mono' :
+                            'font-script italic'
+                          }`}
+                          style={currentFont === 'script' ? { fontFamily: "'Dancing Script', cursive" } : {}}
+                        >
+                           <TypewriterText text={enhancedText} />
+                           <span className="cursor-blink" />
+                        </motion.div>
+                      )}
                   </AnimatePresence>
                </div>
 

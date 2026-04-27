@@ -7,6 +7,8 @@ import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import History from './pages/History';
 import Settings from './pages/Settings';
+import ArtisanCards from './pages/ArtisanCards';
+import PoetryStudio from './pages/PoetryStudio';
 import CreatorLab from './pages/CreatorLab';
 import DashboardLayout from './components/DashboardLayout';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -27,7 +29,11 @@ const ProtectedRoute = ({ children }) => {
 
 function Scaffold() {
   const location = useLocation();
-  const isDashboardRoute = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/enhancer') || location.pathname.startsWith('/creator-lab');
+  const isDashboardRoute = location.pathname.startsWith('/dashboard') || 
+                           location.pathname.startsWith('/enhancer') || 
+                           location.pathname.startsWith('/creator-lab') ||
+                           location.pathname.startsWith('/artisan-cards') ||
+                           location.pathname.startsWith('/poetry-studio');
   const isAuthRoute = location.pathname === '/auth';
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
@@ -59,6 +65,8 @@ function Scaffold() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/enhancer" element={<Enhancer />} />
             <Route path="/creator-lab" element={<CreatorLab />} />
+            <Route path="/artisan-cards" element={<ArtisanCards />} />
+            <Route path="/poetry-studio" element={<PoetryStudio />} />
             <Route path="/dashboard/history" element={<History />} />
             <Route path="/dashboard/settings" element={<Settings />} />
             <Route path="/dashboard/*" element={<Dashboard />} />
