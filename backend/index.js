@@ -5,16 +5,22 @@ import http from 'http';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import helmet from 'helmet';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import connectDB from './config/db.js';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Connect to MongoDB
 connectDB();
 
 const app = express();
 const server = http.createServer(app);
+// ... existing io setup ...
 const io = new Server(server, {
   cors: {
     origin: process.env.CLIENT_URL || '*',
@@ -28,29 +34,28 @@ import generateRoutes from './routes/generate.js';
 
 // Middleware
 app.use(cors({ 
-  origin: process.env.CLIENT_URL || '*', // Production URL from .env or fallback
+  origin: process.env.CLIENT_URL || '*', 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
-
-// Debug Logging Middleware (Moved after express.json to see the body)
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-  if (req.body && typeof req.body === 'object' && Object.keys(req.body).length > 0) {
-    console.log('Body:', JSON.stringify(req.body, null, 2));
-  }
-  next();
-});
 
 // Main API Routes
 app.use('/api', apiRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/generate', generateRoutes);
 
-// Basic Route
-app.get('/', (req, res) => {
-  res.send('AI Handwritten Text Enhancer API is running...');
+// Serve static assets in production
+const frontendDistPath = path.join(__dirname, '../frontend/dist');
+app.use(express.static(frontendDistPath));
+
+// Catch-all route to serve the frontend index.html for SPA routing
+app.get('*', (req, res) => {
+  // Only serve index.html for non-API routes
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ error: 'API route not found' });
+  }
+  res.sendFile(path.join(frontendDistPath, 'index.html'));
 });
 
 // Socket.io connection handling
