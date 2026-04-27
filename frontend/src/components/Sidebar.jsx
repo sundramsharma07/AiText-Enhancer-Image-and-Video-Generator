@@ -26,12 +26,7 @@ export default function Sidebar({ onClose }) {
   ];
 
   return (
-    <motion.div 
-      initial={{ x: -280 }}
-      animate={{ x: 0 }}
-      transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-      className="w-72 bg-slate-950/90 md:bg-slate-950/40 backdrop-blur-3xl border-r border-white/[0.05] h-screen sticky top-0 flex flex-col pt-10 pb-8 px-6 z-40"
-    >
+    <div className="w-full bg-slate-950/90 md:bg-slate-950/40 backdrop-blur-3xl h-full flex flex-col pt-10 pb-8 px-6 overflow-y-auto">
       <div className="flex items-center justify-between mb-16 px-2">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-2xl shadow-primary/20 rotate-3 group cursor-pointer hover:rotate-12 transition-transform duration-500">
@@ -103,6 +98,6 @@ export default function Sidebar({ onClose }) {
           Sign Out Studio
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }

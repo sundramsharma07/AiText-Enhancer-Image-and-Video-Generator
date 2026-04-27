@@ -10,23 +10,44 @@ export default function DashboardLayout() {
   const { user } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Close sidebar only if we are on mobile
+  const closeSidebar = () => {
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   return (
     <div className="flex bg-app-bg min-h-screen text-textMain relative overflow-hidden">
-      {/* Sidebar - responsive visibility */}
-      <div className={`fixed inset-0 z-50 lg:relative lg:z-0 lg:flex transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <Sidebar onClose={() => setIsSidebarOpen(false)} />
+      {/* Sidebar - Desktop */}
+      <div className="hidden lg:flex w-72 h-screen sticky top-0 border-r border-white/[0.05] z-30">
+        <Sidebar />
       </div>
 
-      {/* Mobile Overlay */}
+      {/* Sidebar - Mobile */}
       <AnimatePresence>
         {isSidebarOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsSidebarOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
-          />
+          <div className="fixed inset-0 z-[60] lg:hidden">
+            {/* Overlay */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsSidebarOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            
+            {/* Sidebar content */}
+            <motion.div 
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="absolute inset-y-0 left-0 w-72"
+            >
+              <Sidebar onClose={closeSidebar} />
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
       
