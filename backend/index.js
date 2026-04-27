@@ -5,6 +5,11 @@ import http from 'http';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import helmet from 'helmet';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import connectDB from './config/db.js';
 
@@ -49,8 +54,16 @@ app.use('/api/auth', authRoutes);
 app.use('/api/generate', generateRoutes);
 
 // Basic Route
-app.get('/', (req, res) => {
+app.get('/api-health', (req, res) => {
   res.send('AI Handwritten Text Enhancer API is running...');
+});
+
+// Serve static files from the frontend/dist directory
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// Wildcard route to serve index.html for SPA routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 // Socket.io connection handling
