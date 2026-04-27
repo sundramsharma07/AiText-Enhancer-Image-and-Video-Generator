@@ -127,6 +127,7 @@ export default function Settings() {
     { id: 'profile', label: 'Identity', icon: User },
     { id: 'security', label: 'Shield', icon: Shield },
     { id: 'engine', label: 'AI Engine', icon: Cpu },
+    { id: 'privacy', label: 'Guidelines', icon: Shield },
     { id: 'appearance', label: 'Canvas', icon: Palette }
   ];
 
@@ -314,7 +315,50 @@ export default function Settings() {
             </motion.div>
           )}
 
-          {activeTab !== 'profile' && activeTab !== 'security' && activeTab !== 'engine' && (
+          {activeTab === 'privacy' && (
+            <motion.div 
+               key="privacy"
+               initial={{ opacity: 0, y: 20 }} 
+               animate={{ opacity: 1, y: 0 }}
+               exit={{ opacity: 0, y: -20 }}
+            >
+               <SettingSection 
+                title="Ethical Creative Code" 
+                description="Our studio is built on the principle of responsible creativity. These guidelines ensure the longevity of the artistic network."
+              >
+                <div className="space-y-6">
+                   <div className="p-6 bg-primary/5 border border-primary/20 rounded-3xl">
+                      <h4 className="text-lg font-bold text-primary mb-2 flex items-center gap-2">
+                        <Sparkles size={18} /> Resource Preservation
+                      </h4>
+                      <p className="text-sm text-textMuted leading-relaxed">
+                        To maintain high creative fidelity, please <strong>refrain from generating unnecessary or redundant images</strong>. Every generation consumes significant neural bandwidth and artistic energy.
+                      </p>
+                   </div>
+                   
+                   <div className="p-6 bg-white/[0.02] border border-white/[0.08] rounded-3xl">
+                      <h4 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        <Shield size={18} /> Content Integrity
+                      </h4>
+                      <p className="text-sm text-textMuted leading-relaxed">
+                        All artistic outputs must adhere to our studio standards. Generating harmful, explicit, or copyright-infringing material is strictly prohibited and may result in session termination.
+                      </p>
+                   </div>
+
+                   <div className="p-6 bg-white/[0.02] border border-white/[0.08] rounded-3xl">
+                      <h4 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        <Globe size={18} /> Global Resonance
+                      </h4>
+                      <p className="text-sm text-textMuted leading-relaxed">
+                        Respect the creative frequencies of other artisans. The studio is a shared space for collective neural evolution.
+                      </p>
+                   </div>
+                </div>
+              </SettingSection>
+            </motion.div>
+          )}
+
+          {activeTab === 'appearance' && (
             <motion.div 
                key="empty"
                initial={{ opacity: 0 }} 
