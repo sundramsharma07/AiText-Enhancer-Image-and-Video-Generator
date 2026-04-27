@@ -68,6 +68,12 @@
     animation: shimmer 3s infinite linear;
   }
 
+  .cursor-glow {
+    @apply fixed w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px] pointer-events-none z-[1] transition-transform duration-300 ease-out;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
+  }
+
   .cursor-blink {
     @apply inline-block w-0.5 h-6 bg-primary ml-1 align-middle animate-pulse;
   }
