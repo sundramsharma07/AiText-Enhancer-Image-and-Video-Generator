@@ -45,17 +45,9 @@ app.use('/api', apiRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/generate', generateRoutes);
 
-// Serve static assets in production
-const frontendDistPath = path.join(__dirname, '../frontend/dist');
-app.use(express.static(frontendDistPath));
-
-// Catch-all route to serve the frontend index.html for SPA routing
-app.get('/*', (req, res) => {
-  // Only serve index.html for non-API routes
-  if (req.path.startsWith('/api')) {
-    return res.status(404).json({ error: 'API route not found' });
-  }
-  res.sendFile(path.join(frontendDistPath, 'index.html'));
+// Basic Route
+app.get('/', (req, res) => {
+  res.send('AI Handwritten Text Enhancer API is running...');
 });
 
 // Socket.io connection handling
