@@ -13,8 +13,6 @@ import {
   ChevronRight,
   Star
 } from 'lucide-react';
-import workspaceImg from '../assets/workspace.png';
-import aiGeneratorImg from '../assets/ai-generator.png';
 
 const FloatingElement = ({ children, delay = 0, x = 0, y = 0 }) => (
   <motion.div
@@ -189,7 +187,7 @@ export default function Landing() {
           >
             <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 to-transparent blur-3xl -z-10" />
             <div className="glass-panel p-3 rounded-[40px] overflow-hidden rotate-2 hover:rotate-0 transition-transform duration-700">
-               <img src={workspaceImg} alt="Workspace" className="w-full rounded-[32px] shadow-2xl h-[500px] object-cover" />
+               <img src="/workspace.png" alt="Workspace" className="w-full rounded-[32px] shadow-2xl h-[500px] object-cover" />
             </div>
           </motion.div>
         </div>
@@ -206,7 +204,7 @@ export default function Landing() {
             className="lg:order-1 order-2"
           >
             <div className="glass-panel p-3 rounded-[40px] overflow-hidden -rotate-2 hover:rotate-0 transition-transform duration-700">
-               <img src={aiGeneratorImg} alt="AI Generator" className="w-full rounded-[32px] shadow-2xl h-[500px] object-contain bg-black/40" />
+               <img src="/ai-generator.png" alt="AI Generator" className="w-full rounded-[32px] shadow-2xl h-[500px] object-contain bg-black/40" />
             </div>
           </motion.div>
 
