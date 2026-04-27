@@ -1,15 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
+
 @import "tailwindcss";
 
 @theme {
-  --color-app-bg: #030712;
-  --color-surface: #0f17 slate-900;
-  --color-primary: #a855f7;
+  --color-app-bg: #030612;
+  --color-surface: #0f172a;
+  --color-primary: #8b5cf6;
   --color-secondary: #ec4899;
-  --color-accent: #14b8a6;
+  --color-accent: #2dd4bf;
   --color-textMain: #f8fafc;
   --color-textMuted: #94a3b8;
   
-  --font-sans: "Inter", sans-serif;
+  --font-sans: "Outfit", "Inter", sans-serif;
   --font-serif: "Playfair Display", serif;
 
   @keyframes float {
@@ -33,11 +35,13 @@
 
 @layer components {
   .glass-card {
-    @apply bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] shadow-2xl;
+    @apply bg-white/[0.02] backdrop-blur-3xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
+    will-change: transform, opacity;
   }
 
   .glass-panel {
-    @apply bg-slate-900/40 backdrop-blur-3xl border border-white/[0.05] shadow-2xl;
+    @apply bg-slate-950/20 backdrop-blur-3xl border border-white/[0.06] shadow-2xl;
+    will-change: transform, opacity;
   }
 
   .premium-blur {

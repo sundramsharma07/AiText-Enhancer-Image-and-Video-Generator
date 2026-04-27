@@ -87,79 +87,172 @@ export default function Landing() {
   ];
 
   return (
-    <div className="relative min-h-screen bg-app-bg text-textMain overflow-hidden">
+    <div className="relative min-h-screen bg-app-bg text-textMain overflow-hidden selection:bg-primary/30">
       {/* Decorative Elements */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <FloatingElement delay={0} x={-40} y={-30}>
-           <div className="w-64 h-64 bg-primary/10 rounded-full blur-[100px]" />
+           <div className="w-96 h-96 bg-primary/10 rounded-full blur-[120px]" />
         </FloatingElement>
         <FloatingElement delay={2} x={30} y={20}>
-           <div className="w-72 h-72 bg-secondary/10 rounded-full blur-[120px]" />
-        </FloatingElement>
-        
-        <FloatingElement delay={1} x={-10} y={-10}>
-           <p className="font-handwriting text-5xl text-primary/10 -rotate-12 select-none">Capture ideas...</p>
-        </FloatingElement>
-        <FloatingElement delay={3} x={20} y={-40}>
-           <p className="font-handwriting text-4xl text-secondary/10 rotate-6 select-none">Refine reality.</p>
+           <div className="w-80 h-80 bg-secondary/10 rounded-full blur-[100px]" />
         </FloatingElement>
       </div>
 
-      {/* Hero */}
-      <section className="relative z-10 pt-52 pb-32 px-6">
-        <div className="max-w-6xl mx-auto text-center">
+      {/* Hero Section */}
+      <section className="relative z-10 pt-44 pb-20 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs font-bold tracking-widest text-primary uppercase mb-10"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-[10px] font-bold tracking-[0.3em] text-primary uppercase mb-8 backdrop-blur-md"
           >
-            <CloudLightning size={12} /> Re-imagining the art of digital ink
+            <Sparkles size={12} className="inline mr-2" /> The Future of Handwriting
           </motion.div>
           
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif font-bold leading-[0.85] tracking-tighter mb-10">
-            <AnimatedText text="Elegance in" className="block text-white" />
-            <AnimatedText text="every stroke." className="block text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent" />
+          <h1 className="text-7xl md:text-[120px] font-serif font-black leading-[0.8] tracking-tighter mb-12">
+            <AnimatedText text="Digitize your" className="block text-white" />
+            <AnimatedText text="Creative Soul." className="block text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent" />
           </h1>
 
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="text-lg md:text-xl text-textMuted max-w-2xl mx-auto mb-14 leading-relaxed"
+            className="text-xl md:text-2xl text-textMuted max-w-3xl mx-auto mb-16 font-light leading-relaxed"
           >
-            Bridge the gap between your handwritten thoughts and professional digital prose. Powered by Pollinations AI for ultimate creative freedom.
+            Bridge the gap between tactile inspiration and professional precision. 
+            A studio where messy ink becomes <span className="text-white font-medium">masterpiece digital prose.</span>
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6"
+            className="flex flex-col sm:flex-row items-center justify-center gap-8"
           >
-            <Link to="/enhancer" className="btn-premium text-lg px-12 py-4">
-              Enter the Studio <ArrowRight size={20} />
+            <Link to="/enhancer" className="btn-premium text-xl px-16 py-5 rounded-2xl shadow-[0_20px_50px_rgba(139,92,246,0.2)]">
+              Open Studio <ArrowRight size={20} />
             </Link>
-            <button className="px-10 py-4 rounded-xl border border-white/10 hover:bg-white/[0.05] transition-all font-medium">
+            <button 
+              onClick={() => document.getElementById('features-anchor').scrollIntoView({ behavior: 'smooth' })}
+              className="px-12 py-5 rounded-2xl border border-white/10 glass-card hover:bg-white/[0.05] transition-all font-bold text-lg"
+            >
               Explore Features
             </button>
           </motion.div>
         </div>
       </section>
 
-      {/* Feature Grid */}
-      <section className="relative z-10 py-32 px-6 border-t border-white/[0.05]">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-12 items-end mb-24">
-            <div className="flex-1">
-              <h2 className="text-4xl md:text-6xl font-serif font-bold tracking-tighter mb-4">Crafted for perfection.</h2>
-              <div className="h-1 w-24 bg-gradient-to-r from-primary to-transparent rounded-full" />
+      {/* NEW: Scrolling Product Showcase Section (Description Left, Image Right) */}
+      <section className="relative z-10 py-40 px-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-8"
+          >
+            <div className="inline-flex items-center gap-3 text-accent text-xs font-black uppercase tracking-[0.4em]">
+              <div className="w-12 h-px bg-accent/30" /> Tactical Precision
             </div>
-            <p className="flex-1 text-textMuted text-lg leading-relaxed">
+            <h2 className="text-5xl md:text-7xl font-serif font-bold text-white leading-tight">
+              A Studio for the <span className="italic text-primary">Modern Scribe.</span>
+            </h2>
+            <p className="text-lg text-textMuted leading-relaxed">
+              Experience the ritual of handwriting without the limitations of paper. Our AI engine extracts every nuance of your stroke, converting messy notes into structured digital brilliance instantly.
+            </p>
+            <div className="flex flex-col gap-6">
+              {[
+                { title: "Neural OCR", desc: "Advanced vision models that read what others can't." },
+                { title: "Semantic Polish", desc: "Natural language refinement that preserves your voice." }
+              ].map((item, i) => (
+                <div key={i} className="flex gap-4">
+                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0 mt-1">
+                    <CheckCircle2 size={14} />
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold mb-1">{item.title}</h4>
+                    <p className="text-sm text-textMuted">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 to-transparent blur-3xl -z-10" />
+            <div className="glass-panel p-3 rounded-[40px] overflow-hidden rotate-2 hover:rotate-0 transition-transform duration-700">
+               <img src="/src/assets/workspace.png" alt="Workspace" className="w-full rounded-[32px] shadow-2xl h-[500px] object-cover" />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* NEW: Scrolling Generator Showcase Section (Image Left, Description Right) */}
+      <section className="relative z-10 py-40 px-6 bg-white/[0.01]">
+        <div id="features-anchor" className="absolute -top-20" />
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="lg:order-1 order-2"
+          >
+            <div className="glass-panel p-3 rounded-[40px] overflow-hidden -rotate-2 hover:rotate-0 transition-transform duration-700">
+               <img src="/src/assets/ai-generator.png" alt="AI Generator" className="w-full rounded-[32px] shadow-2xl h-[500px] object-contain bg-black/40" />
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-8 lg:order-2 order-1"
+          >
+            <div className="inline-flex items-center gap-3 text-secondary text-xs font-black uppercase tracking-[0.4em]">
+              <div className="w-12 h-px bg-secondary/30" /> Infinite Creation
+            </div>
+            <h2 className="text-5xl md:text-7xl font-serif font-bold text-white leading-tight">
+              Beyond the <span className="italic text-secondary">Canvas.</span>
+            </h2>
+            <p className="text-lg text-textMuted leading-relaxed">
+              Our Creative Lab isn't just for text. Synthesize stunning visual assets, cinematic motion, and atmospheric audio from simple natural language prompts.
+            </p>
+            <div className="grid grid-cols-2 gap-8">
+              <div className="glass-card p-6 rounded-2xl border-white/[0.05]">
+                <h4 className="text-white font-bold h-12 flex items-center">8K Synthesis</h4>
+                <div className="h-0.5 w-full bg-white/5 my-4" />
+                <p className="text-[10px] text-textMuted leading-relaxed uppercase tracking-tighter">Hyper-realistic output for creators.</p>
+              </div>
+              <div className="glass-card p-6 rounded-2xl border-white/[0.05]">
+                <h4 className="text-white font-bold h-12 flex items-center">Temporal Flow</h4>
+                <div className="h-0.5 w-full bg-white/5 my-4" />
+                <p className="text-[10px] text-textMuted leading-relaxed uppercase tracking-tighter">Cinematic video synthesis at your fingertips.</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Feature Grid */}
+      <section className="relative z-10 py-40 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col gap-24">
+          <div className="flex flex-col md:flex-row gap-12 items-end">
+            <div className="flex-1">
+              <h2 className="text-5xl md:text-8xl font-serif font-bold tracking-tighter mb-8 leading-none">The Studio <br/>Protocol.</h2>
+              <div className="h-1.5 w-32 bg-gradient-to-r from-primary to-transparent rounded-full" />
+            </div>
+            <p className="flex-1 text-textMuted text-xl font-light leading-relaxed">
               We've architected a workspace that respects the tactile nature of handwriting while providing the surgical precision of modern AI.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((f, i) => (
               <motion.div
                 key={i}
@@ -167,13 +260,13 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="glass-card p-10 rounded-[32px] group hover:bg-white/[0.05] transition-all cursor-default"
+                className="glass-card p-12 rounded-[48px] group hover:bg-white/[0.05] transition-all cursor-default border-white/[0.03]"
               >
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-8 border border-white/10 group-hover:scale-110 transition-transform`}>
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-10 border border-white/10 group-hover:scale-110 transition-transform duration-500 shadow-xl`}>
                   {f.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-4">{f.title}</h3>
-                <p className="text-textMuted text-sm leading-relaxed">
+                <h3 className="text-2xl font-bold mb-6 tracking-tight">{f.title}</h3>
+                <p className="text-textMuted text-sm leading-relaxed font-medium">
                   {f.desc}
                 </p>
               </motion.div>
