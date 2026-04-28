@@ -99,7 +99,7 @@ export default function ArtisanCards() {
         <div className="hidden lg:flex items-center gap-4 self-end">
            <div className="glass-panel p-4 rounded-2xl border-white/[0.05] bg-white/[0.01] flex items-center gap-4 max-w-sm group hover:bg-white/[0.03] transition-all cursor-help">
               <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
-                 <img src="https://gen.pollinations.ai/image/birthday%20cake%20aesthetic%20artistic?width=100&height=100&model=flux" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                 <img src="https://pollinations.ai/p/birthday%20cake%20aesthetic%20artistic?width=100&height=100&nologo=true" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div>
                  <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Celebrations</p>
@@ -108,7 +108,7 @@ export default function ArtisanCards() {
            </div>
            <div className="glass-panel p-4 rounded-2xl border-white/[0.05] bg-white/[0.01] flex items-center gap-4 max-w-sm group hover:bg-white/[0.03] transition-all cursor-help">
               <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
-                 <img src="https://gen.pollinations.ai/image/business%20minimalist%20background%20texture?width=100&height=100&model=flux" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                 <img src="https://pollinations.ai/p/business%20minimalist%20background%20texture?width=100&height=100&nologo=true" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div>
                  <p className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1">Professional</p>

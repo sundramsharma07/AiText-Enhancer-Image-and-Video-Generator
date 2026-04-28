@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, PenTool, Globe, Send, Copy, RefreshCw, Languages, Heart, Wind, Flame } from 'lucide-react';
+import { Sparkles, PenTool, Globe, Send, Copy, RefreshCw, Languages, Heart, Wind, Flame, FileText, Download } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 import { useAuth } from '../context/AuthContext';
 
 const POETRY_STYLES = [
@@ -46,6 +47,38 @@ export default function PoetryStudio() {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(poem);
     alert("Poem captured to clipboard.");
+  };
+
+  const downloadPDF = () => {
+    if (!poem) return;
+    
+    const doc = new jsPDF();
+    
+    // Set background and styling
+    doc.setFillColor(3, 7, 18); // app-bg color
+    doc.rect(0, 0, 210, 297, 'F');
+    
+    doc.setTextColor(168, 85, 247); // primary color
+    doc.setFontSize(22);
+    doc.setFont("serif", "bold");
+    doc.text("PEN AI - Poetic Studio", 105, 30, { align: 'center' });
+    
+    doc.setDrawColor(168, 85, 247);
+    doc.line(40, 35, 170, 35);
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(14);
+    doc.setFont("serif", "italic");
+    
+    const splitText = doc.splitTextToSize(poem, 160);
+    doc.text(splitText, 105, 60, { align: 'center' });
+    
+    doc.setTextColor(107, 114, 128); // textMuted
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, 270, { align: 'center' });
+    doc.text("Articulated by PEN AI Multi-Modal Engine", 105, 275, { align: 'center' });
+    
+    doc.save(`PENAI_Poem_${Date.now()}.pdf`);
   };
 
   return (
@@ -149,9 +182,12 @@ export default function PoetryStudio() {
                          <pre className="whitespace-pre-wrap font-serif text-2xl leading-[1.8] text-white italic drop-shadow-sm px-4">
                            {poem}
                          </pre>
-                         <div className="mt-12 flex items-center justify-center gap-6">
+                         <div className="mt-12 flex flex-wrap items-center justify-center gap-6">
                             <button onClick={copyToClipboard} className="flex items-center gap-2 text-xs font-bold text-textMuted hover:text-white transition-all uppercase tracking-widest">
                                <Copy size={16} /> Capture Verse
+                            </button>
+                            <button onClick={downloadPDF} className="flex items-center gap-2 text-xs font-bold text-primary hover:text-white transition-all uppercase tracking-widest">
+                               <Download size={16} /> Export PDF
                             </button>
                             <button onClick={handleGenerate} className="flex items-center gap-2 text-xs font-bold text-textMuted hover:text-white transition-all uppercase tracking-widest">
                                <RefreshCw size={16} /> New Frequency
