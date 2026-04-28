@@ -183,20 +183,14 @@ export default function Enhancer() {
             </div>
 
             {/* Inspiration Cards */}
-            <div className="hidden lg:flex items-center gap-4">
-               <div className="glass-panel p-4 rounded-2xl border-white/[0.05] bg-white/[0.01] flex items-center gap-4 max-w-sm group hover:bg-white/[0.03] transition-all cursor-help">
-                  <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
-                     <img src="https://pollinations.ai/p/handwritten%20journal%20page%20aesthetic?width=100&height=100&nologo=true" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                  </div>
+            <div className="hidden lg:flex flex-col gap-3">
+               <div className="glass-panel px-6 py-4 rounded-2xl border-white/[0.05] bg-white/[0.01] max-w-sm group hover:bg-white/[0.03] transition-all cursor-help">
                   <div>
                      <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">OCR Power</p>
                      <p className="text-[11px] text-textMuted leading-tight italic">"Convert messy journal notes into professional transcripts."</p>
                   </div>
                </div>
-               <div className="glass-panel p-4 rounded-2xl border-white/[0.05] bg-white/[0.01] flex items-center gap-4 max-w-sm group hover:bg-white/[0.03] transition-all cursor-help">
-                  <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
-                     <img src="https://pollinations.ai/p/elegant%20old%20letter%20aesthetic?width=100&height=100&nologo=true" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                  </div>
+               <div className="glass-panel px-6 py-4 rounded-2xl border-white/[0.05] bg-white/[0.01] max-w-sm group hover:bg-white/[0.03] transition-all cursor-help">
                   <div>
                      <p className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1">Poetic Flow</p>
                      <p className="text-[11px] text-textMuted leading-tight italic">"Polish your drafts into poetic masterpieces in seconds."</p>
