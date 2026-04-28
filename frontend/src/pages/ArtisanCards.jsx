@@ -1,7 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Download, Wand2, Type, Image as ImageIcon, Send, Share2, Layers, Check, ChevronRight } from 'lucide-react';
+import html2canvas from 'html2canvas';
 import { useAuth } from '../context/AuthContext';
+
+const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
 
 const CARD_THEMES = [
   { id: 'birthday', label: 'Celebration', prompt: 'vibrant, festive, celebratory, high-quality, abstract bokeh, joyful colors', icon: Sparkles },
@@ -17,6 +20,7 @@ export default function ArtisanCards() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [cardImage, setCardImage] = useState(null);
   const [generatingStep, setGeneratingStep] = useState(0);
+  const cardRef = useRef(null);
 
   const handleGenerate = async () => {
     if (!text) return alert("Please enter the soul of your card (the message).");
@@ -25,13 +29,24 @@ export default function ArtisanCards() {
     setGeneratingStep(1);
     
     try {
-      // Step 1: Generate the artistic background
-      const seed = Math.floor(Math.random() * 999999);
-      const bgPrompt = encodeURIComponent(`${activeTheme.prompt}, background for ${text.substring(0, 30)}`);
-      const imageUrl = `https://gen.pollinations.ai/prompt/${bgPrompt}?model=flux&width=1080&height=1350&nologo=true&seed=${seed}`;
-      
-      const response = await fetch(imageUrl);
+      // Use the backend proxy to avoid CORS and use server-side API key
+      const response = await fetch(`${API_BASE}/generate/image`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          prompt: `${activeTheme.prompt}, high quality greeting card background for: ${text.substring(0, 50)}`,
+          width: 1080,
+          height: 1350
+        })
+      });
+
+      if (!response.ok) throw new Error("Generation failed");
+
       const blob = await response.blob();
+      if (cardImage) URL.revokeObjectURL(cardImage); // Clean up old URL
       setCardImage(URL.createObjectURL(blob));
       setGeneratingStep(2);
     } catch (error) {
@@ -43,12 +58,28 @@ export default function ArtisanCards() {
     }
   };
 
-  const handleDownload = () => {
-     if (!cardImage) return;
-     const link = document.createElement('a');
-     link.href = cardImage;
-     link.download = `PENAI_Artisan_Card_${Date.now()}.png`;
-     link.click();
+  const handleDownload = async () => {
+     if (!cardRef.current || !cardImage) return;
+     
+     try {
+       const canvas = await html2canvas(cardRef.current, {
+         useCORS: true,
+         backgroundColor: null,
+         scale: 2, // Higher quality
+       });
+       
+       const link = document.createElement('a');
+       link.href = canvas.toDataURL('image/png');
+       link.download = `PENAI_Artisan_Card_${Date.now()}.png`;
+       link.click();
+     } catch (err) {
+       console.error("Capture failed:", err);
+       // Fallback to just the image if capture fails
+       const link = document.createElement('a');
+       link.href = cardImage;
+       link.download = `PENAI_Artisan_Card_BG_${Date.now()}.png`;
+       link.click();
+     }
   };
 
   return (
@@ -68,7 +99,7 @@ export default function ArtisanCards() {
         <div className="hidden lg:flex items-center gap-4 self-end">
            <div className="glass-panel p-4 rounded-2xl border-white/[0.05] bg-white/[0.01] flex items-center gap-4 max-w-sm group hover:bg-white/[0.03] transition-all cursor-help">
               <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
-                 <img src="https://gen.pollinations.ai/prompt/birthday%20cake%20aesthetic%20artistic?width=100&height=100&model=flux" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                 <img src="https://gen.pollinations.ai/image/birthday%20cake%20aesthetic%20artistic?width=100&height=100&model=flux" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div>
                  <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Celebrations</p>
@@ -77,7 +108,7 @@ export default function ArtisanCards() {
            </div>
            <div className="glass-panel p-4 rounded-2xl border-white/[0.05] bg-white/[0.01] flex items-center gap-4 max-w-sm group hover:bg-white/[0.03] transition-all cursor-help">
               <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
-                 <img src="https://gen.pollinations.ai/prompt/business%20minimalist%20background%20texture?width=100&height=100&model=flux" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                 <img src="https://gen.pollinations.ai/image/business%20minimalist%20background%20texture?width=100&height=100&model=flux" alt="Example" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div>
                  <p className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1">Professional</p>
@@ -147,11 +178,12 @@ export default function ArtisanCards() {
               <AnimatePresence mode="wait">
                 {cardImage ? (
                   <motion.div 
+                    ref={cardRef}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="relative w-full h-full"
                   >
-                    <img src={cardImage} alt="Neural Card" className="w-full h-full object-cover" />
+                    <img src={cardImage} alt="Neural Card" className="w-full h-full object-cover" crossOrigin="anonymous" />
                     
                     {/* Text Overlay - Stylistic */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end justify-center p-12 text-center pointer-events-none">
