@@ -147,7 +147,7 @@ export default function CreatorLab() {
       <div className="max-w-7xl mx-auto relative z-10 flex flex-col gap-10">
 
         {/* ── Header ── */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 flex-wrap">
           <div>
             <div className="flex items-center gap-3 mb-3">
               <StatusBadge type={status} />
@@ -179,7 +179,7 @@ export default function CreatorLab() {
           </div>
 
           {/* Type switcher */}
-          <div className="flex p-1.5 bg-white/[0.03] border border-white/[0.08] rounded-2xl overflow-x-auto">
+          <div className="flex p-1.5 bg-white/[0.03] border border-white/[0.08] rounded-2xl overflow-x-auto w-full md:w-auto scrollbar-hide">
             {[
               { id: 'image', icon: <ImageIcon size={16} />, label: 'Vision' },
               { id: 'video', icon: <Film size={16} />,      label: 'Motion' },
@@ -203,7 +203,7 @@ export default function CreatorLab() {
 
           {/* Controls Panel */}
           <div className="lg:col-span-5 flex flex-col gap-6">
-            <div className="glass-panel rounded-[32px] p-8 border-white/5 relative overflow-hidden">
+            <div className="glass-panel rounded-[32px] p-6 sm:p-8 border-white/5 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <Wand2 size={60} />
               </div>
@@ -265,11 +265,11 @@ export default function CreatorLab() {
           </div>
 
           {/* ── Result Canvas ── */}
-          <div className="lg:col-span-7 h-full min-h-[650px]">
+          <div className="lg:col-span-7 h-full min-h-[400px] sm:min-h-[650px]">
             <div className="glass-panel w-full h-full rounded-[48px] border-white/5 relative overflow-hidden flex flex-col shadow-2xl">
 
               {/* Canvas Header */}
-              <div className="px-10 py-6 border-b border-white/[0.05] flex items-center justify-between">
+              <div className="px-6 sm:px-10 py-5 sm:py-6 border-b border-white/[0.05] flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-primary shadow-sm hover:scale-105 transition-transform">
                     {type === 'image' ? <ImageIcon size={20} /> : type === 'video' ? <Film size={20} /> : <Volume2 size={20} />}
@@ -300,7 +300,7 @@ export default function CreatorLab() {
               </div>
 
               {/* Main Preview Area — exactly ONE child inside AnimatePresence at all times */}
-              <div className="flex-1 relative bg-black/20 flex items-center justify-center p-8">
+              <div className="flex-1 relative bg-black/20 flex items-center justify-center p-4 sm:p-8 min-h-[350px]">
                 <AnimatePresence mode="wait">
 
                   {panelKey === 'idle' && (
@@ -420,7 +420,7 @@ export default function CreatorLab() {
               </div>
 
               {/* Status Footer */}
-              <div className="px-10 py-5 bg-white/[0.02] border-t border-white/[0.05] flex items-center justify-between text-[10px] uppercase font-bold tracking-[0.3em] text-textMuted/40">
+              <div className="px-6 sm:px-10 py-4 sm:py-5 bg-white/[0.02] border-t border-white/[0.05] flex flex-col sm:flex-row items-center justify-between gap-4 text-[9px] sm:text-[10px] uppercase font-bold tracking-[0.3em] text-textMuted/40">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-emerald-500/40 animate-pulse" />
                   Neural Engine: Pollinations Flux · Secure Proxy
