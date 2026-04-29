@@ -10,6 +10,8 @@ import Settings from './pages/Settings';
 import ArtisanCards from './pages/ArtisanCards';
 import PoetryStudio from './pages/PoetryStudio';
 import CreatorLab from './pages/CreatorLab';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import DashboardLayout from './components/DashboardLayout';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -77,6 +79,8 @@ function Scaffold() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
           </Routes>
         </main>
       )}

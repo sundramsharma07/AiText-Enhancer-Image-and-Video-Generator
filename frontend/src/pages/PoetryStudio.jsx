@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, PenTool, Globe, Send, Copy, RefreshCw, Languages, Heart, Wind, Flame, FileText, Download } from 'lucide-react';
+import { Sparkles, PenTool, Copy, RefreshCw, Languages, Heart, Wind, Flame, Download } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { useAuth } from '../context/AuthContext';
 
@@ -12,7 +12,7 @@ const POETRY_STYLES = [
 ];
 
 export default function PoetryStudio() {
-  const { token } = useAuth();
+  useAuth(); // context used for session awareness
   const [words, setWords] = useState("");
   const [language, setLanguage] = useState("English");
   const [activeStyle, setActiveStyle] = useState(POETRY_STYLES[0]);

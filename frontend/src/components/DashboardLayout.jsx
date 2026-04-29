@@ -82,7 +82,7 @@ export default function DashboardLayout() {
           </div>
           
           <div className="flex items-center gap-3 md:gap-6">
-            <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.05] p-1 rounded-2xl hidden xs:flex">
+            <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.05] p-1 rounded-2xl">
                <button 
                 onClick={() => alert("Notifications are synchronized with your artistic pulse. No new signals found.")}
                 title="Notifications"

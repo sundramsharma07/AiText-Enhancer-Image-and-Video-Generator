@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Search, Filter, Calendar, ArrowRight, Trash2, Download, MoreVertical, Sparkles } from 'lucide-react';
+import { FileText, Search, Filter, Calendar, Trash2, Download, MoreVertical, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
 
@@ -79,63 +79,75 @@ export default function History() {
     doc.originalText.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Skeleton loader row/card
+  const SkeletonRow = ({ isMobile }) => (
+    isMobile ? (
+      <div className="glass-card rounded-3xl p-5 animate-pulse border-white/[0.05]">
+        <div className="h-4 bg-white/[0.05] rounded-xl w-3/4 mb-3" />
+        <div className="h-3 bg-white/[0.03] rounded-xl w-1/2" />
+      </div>
+    ) : (
+      <tr className="border-b border-white/[0.03]">
+        <td colSpan="5" className="px-10 py-8">
+          <div className="h-6 bg-white/[0.03] rounded-xl w-full animate-pulse" />
+        </td>
+      </tr>
+    )
+  );
+
   return (
-    <div className="flex flex-col gap-10 min-h-screen">
+    <div className="flex flex-col gap-8 min-h-screen pb-8">
+      {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
         <div>
            <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-widest mb-4 border border-primary/20 px-3 py-1 rounded-full bg-primary/5 w-fit">
               <Sparkles size={12} /> Studio Archive
            </div>
-           <h2 className="text-5xl font-serif font-bold tracking-tighter text-white">Document History</h2>
-           <p className="text-textMuted mt-4 text-lg italic leading-relaxed">
+           <h2 className="text-4xl sm:text-5xl font-serif font-bold tracking-tighter text-white">Document History</h2>
+           <p className="text-textMuted mt-4 text-base sm:text-lg italic leading-relaxed">
               Every masterpiece you've ever crafted, <span className="text-white">preserved in time.</span>
            </p>
         </div>
         
         <div className="flex items-center gap-3 w-full lg:w-auto">
           <div className="relative group flex-1 lg:flex-none">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-textMuted group-focus-within:text-primary transition-colors" size={18} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-textMuted group-focus-within:text-primary transition-colors" size={16} />
             <input 
               type="text" 
               placeholder="Search history..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-14 pr-6 py-4 bg-white/[0.03] border border-white/[0.08] rounded-2xl text-sm outline-none focus:bg-white/[0.05] focus:border-primary/50 transition-all w-full lg:w-80 text-textMain"
+              className="pl-12 pr-4 py-3.5 bg-white/[0.03] border border-white/[0.08] rounded-2xl text-sm outline-none focus:bg-white/[0.05] focus:border-primary/50 transition-all w-full lg:w-72 text-textMain"
             />
           </div>
-          <button className="p-4 bg-white/[0.03] border border-white/[0.08] rounded-2xl text-textMuted hover:text-white transition-all">
-            <Filter size={18} />
+          <button className="p-3.5 bg-white/[0.03] border border-white/[0.08] rounded-2xl text-textMuted hover:text-white transition-all shrink-0">
+            <Filter size={16} />
           </button>
         </div>
       </div>
 
-      <div className="glass-panel rounded-[40px] overflow-hidden border-white/[0.05] bg-white/[0.01]">
+      {/* ── DESKTOP TABLE (md and above) ── */}
+      <div className="hidden md:block glass-panel rounded-[32px] overflow-hidden border-white/[0.05] bg-white/[0.01]">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse min-w-[640px]">
             <thead>
               <tr className="border-b border-white/[0.05] bg-white/[0.02]">
-                <th className="px-10 py-6 text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted">Document Entity</th>
-                <th className="px-10 py-6 text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted">Timestamp</th>
-                <th className="px-10 py-6 text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted">AI Profile</th>
-                <th className="px-10 py-6 text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted">State</th>
-                <th className="px-10 py-6 text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted text-right">Operations</th>
+                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted">Document Entity</th>
+                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted">Timestamp</th>
+                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted">AI Profile</th>
+                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted">State</th>
+                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted text-right">Operations</th>
               </tr>
             </thead>
             <tbody>
               <AnimatePresence>
                 {loading ? (
-                  Array(5).fill(0).map((_, i) => (
-                    <tr key={i} className="border-b border-white/[0.03]">
-                      <td colSpan="5" className="px-10 py-8">
-                        <div className="h-6 bg-white/[0.03] rounded-xl w-full animate-pulse"></div>
-                      </td>
-                    </tr>
-                  ))
+                  Array(4).fill(0).map((_, i) => <SkeletonRow key={i} isMobile={false} />)
                 ) : filteredDocs.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="px-10 py-32 text-center text-textMuted">
+                    <td colSpan="5" className="px-10 py-28 text-center text-textMuted">
                        <div className="flex flex-col items-center opacity-20">
-                          <FileText size={64} className="mb-6 stroke-1" />
+                          <FileText size={56} className="mb-6 stroke-1" />
                           <p className="font-serif text-2xl">No artifacts found in the void.</p>
                           <p className="text-xs uppercase tracking-widest mt-2">{searchTerm ? 'Try a different query' : 'Awaiting your first creation'}</p>
                        </div>
@@ -150,54 +162,54 @@ export default function History() {
                       transition={{ delay: i * 0.05 }}
                       className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-all group"
                     >
-                      <td className="px-10 py-8">
-                        <div className="flex items-center gap-6">
-                          <div className="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-textMuted group-hover:text-primary transition-colors">
-                            <FileText size={20} />
+                      <td className="px-8 py-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-textMuted group-hover:text-primary transition-colors shrink-0">
+                            <FileText size={18} />
                           </div>
-                          <div>
-                            <p className="font-bold text-white group-hover:text-primary transition-colors text-lg tracking-tight line-clamp-1">{doc.title}</p>
-                            <p className="text-[10px] text-textMuted font-medium uppercase tracking-widest mt-1 line-clamp-1 max-w-[250px]">ID: {doc._id.substring(0,8)}</p>
+                          <div className="min-w-0">
+                            <p className="font-bold text-white group-hover:text-primary transition-colors tracking-tight truncate max-w-[200px]">{doc.title}</p>
+                            <p className="text-[10px] text-textMuted font-medium uppercase tracking-widest mt-0.5">ID: {doc._id.substring(0,8)}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-10 py-8">
-                        <div className="flex items-center gap-2 text-textMuted text-xs font-semibold">
-                          <Calendar size={14} className="opacity-50" />
+                      <td className="px-8 py-6">
+                        <div className="flex items-center gap-2 text-textMuted text-xs font-semibold whitespace-nowrap">
+                          <Calendar size={13} className="opacity-50" />
                           {format(new Date(doc.createdAt), 'MMM dd, yyyy')}
                         </div>
                       </td>
-                      <td className="px-10 py-8">
-                        <span className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest border border-primary/20">
+                      <td className="px-8 py-6">
+                        <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest border border-primary/20 whitespace-nowrap">
                           {doc.toneUsed}
                         </span>
                       </td>
-                      <td className="px-10 py-8">
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]"></div>
+                      <td className="px-8 py-6">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]" />
                           <span className="text-[10px] font-bold text-white uppercase tracking-widest">Encoded</span>
                         </div>
                       </td>
-                      <td className="px-10 py-8">
-                        <div className="flex items-center justify-end gap-3 opacity-40 group-hover:opacity-100 transition-opacity">
+                      <td className="px-8 py-6">
+                        <div className="flex items-center justify-end gap-2 opacity-40 group-hover:opacity-100 transition-opacity">
                           <button 
                             onClick={() => handleDownload(doc)}
                             title="Download" 
-                            className="p-3 rounded-xl hover:bg-white/[0.08] text-textMuted hover:text-white transition-all"
+                            className="p-2.5 rounded-xl hover:bg-white/[0.08] text-textMuted hover:text-white transition-all"
                           >
-                             <Download size={18} />
+                             <Download size={16} />
                           </button>
                           <button 
                             onClick={() => handleDelete(doc._id)}
                             disabled={deletingId === doc._id}
                             title="Delete" 
-                            className={`p-3 rounded-xl transition-all ${deletingId === doc._id ? 'opacity-50 cursor-not-allowed' : 'hover:bg-rose-500/10 text-textMuted hover:text-rose-500'}`}
+                            className={`p-2.5 rounded-xl transition-all ${deletingId === doc._id ? 'opacity-50 cursor-not-allowed' : 'hover:bg-rose-500/10 text-textMuted hover:text-rose-500'}`}
                           >
-                             <Trash2 size={18} className={deletingId === doc._id ? 'animate-pulse' : ''} />
+                             <Trash2 size={16} className={deletingId === doc._id ? 'animate-pulse' : ''} />
                           </button>
-                          <div className="w-px h-6 bg-white/[0.05] mx-2" />
-                          <button title="Options" className="p-3 rounded-xl hover:bg-white/[0.08] text-textMuted transition-all">
-                             <MoreVertical size={18} />
+                          <div className="w-px h-5 bg-white/[0.05] mx-1" />
+                          <button title="Options" className="p-2.5 rounded-xl hover:bg-white/[0.08] text-textMuted transition-all">
+                             <MoreVertical size={16} />
                           </button>
                         </div>
                       </td>
@@ -208,6 +220,85 @@ export default function History() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* ── MOBILE CARD LIST (below md) ── */}
+      <div className="flex flex-col gap-4 md:hidden">
+        {loading ? (
+          Array(4).fill(0).map((_, i) => <SkeletonRow key={i} isMobile={true} />)
+        ) : filteredDocs.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 opacity-20 text-center">
+            <FileText size={48} className="mb-4 stroke-1 text-textMuted" />
+            <p className="font-serif text-xl text-white">No artifacts found in the void.</p>
+            <p className="text-xs uppercase tracking-widest mt-2 text-textMuted">
+              {searchTerm ? 'Try a different query' : 'Awaiting your first creation'}
+            </p>
+          </div>
+        ) : (
+          <AnimatePresence>
+            {filteredDocs.map((doc, i) => (
+              <motion.div
+                key={doc._id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ delay: i * 0.04 }}
+                className="glass-card rounded-2xl p-5 border-white/[0.05] hover:border-white/10 transition-all"
+              >
+                {/* Card Top Row */}
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-primary shrink-0 mt-0.5">
+                    <FileText size={18} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-white tracking-tight leading-tight truncate">{doc.title}</p>
+                    <p className="text-[10px] text-textMuted font-medium uppercase tracking-widest mt-0.5">
+                      ID: {doc._id.substring(0, 8)}
+                    </p>
+                  </div>
+                  {/* Status dot */}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                  </div>
+                </div>
+
+                {/* Card Meta Row */}
+                <div className="flex flex-wrap items-center gap-3 mt-4 pt-4 border-t border-white/[0.05]">
+                  <div className="flex items-center gap-1.5 text-textMuted text-xs font-semibold">
+                    <Calendar size={12} className="opacity-60" />
+                    {format(new Date(doc.createdAt), 'MMM dd, yyyy')}
+                  </div>
+                  <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider border border-primary/20">
+                    {doc.toneUsed}
+                  </span>
+                  <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Encoded</span>
+                </div>
+
+                {/* Card Action Row */}
+                <div className="flex items-center gap-2 mt-4">
+                  <button 
+                    onClick={() => handleDownload(doc)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-textMuted hover:text-white hover:bg-white/[0.06] transition-all text-xs font-bold uppercase tracking-wider"
+                  >
+                    <Download size={14} /> Download
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(doc._id)}
+                    disabled={deletingId === doc._id}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border text-xs font-bold uppercase tracking-wider transition-all ${
+                      deletingId === doc._id 
+                        ? 'opacity-50 cursor-not-allowed bg-white/[0.03] border-white/[0.06] text-textMuted' 
+                        : 'bg-rose-500/5 border-rose-500/20 text-rose-500 hover:bg-rose-500/10'
+                    }`}
+                  >
+                    <Trash2 size={14} className={deletingId === doc._id ? 'animate-pulse' : ''} />
+                    {deletingId === doc._id ? 'Deleting...' : 'Delete'}
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        )}
       </div>
     </div>
   );
