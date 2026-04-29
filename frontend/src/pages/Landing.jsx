@@ -19,8 +19,10 @@ import {
   BookOpen,
   Mic,
   MicOff,
+  Volume2 as SpeakerIcon,
   StopCircle
 } from 'lucide-react';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
 
 const FloatingElement = ({ children, delay = 0, x = 0, y = 0 }) => (
   <motion.div
@@ -75,16 +77,16 @@ const DEMO_STEPS = [
     thinking: 'Enhancing your text...',
     output: 'Climate change is one of the most urgent crises of our generation, demanding immediate global cooperation and bold innovation.',
     voice: "Wow! Let's use this AI Text Enhancer to magically fix my messy notes!!" },
-  { feature: 'Poetry Studio', emoji: '🎭', color: '#2dd4bf', icon: BookOpen,
-    prompt: 'rain, nostalgia, old home — in Hindi...',
-    thinking: 'Composing bilingual verse...',
-    output: 'बारिश की बूँदें यादें जगाती हैं, पुराने घर की खुशबू आती है... / Rain drops awaken memories, scent of the old home lingers.',
-    voice: "Yay! Next, let's write a beautiful, amazing poem in the Poetry Studio!!" },
   { feature: 'Image Generator', emoji: '🖼️', color: '#ec4899', icon: ImageIcon,
     prompt: 'a child painting under a rainbow sky...',
     thinking: 'Synthesizing 8K artwork...',
     output: '✨ Stunning AI artwork created! Your image is ready to download and share.',
     voice: "So cool! Now, I'll generate an awesome picture using the Image Generator!!" },
+  { feature: 'Poetry Studio', emoji: '🎭', color: '#2dd4bf', icon: BookOpen,
+    prompt: 'rain, nostalgia, old home — in Hindi...',
+    thinking: 'Composing bilingual verse...',
+    output: 'बारिश की बूँदें यादें जगाती हैं, पुराने घर की खुशबू आती है... / Rain drops awaken memories, scent of the old home lingers.',
+    voice: "Yay! Next, let's write a beautiful, amazing poem in the Poetry Studio!!" },
   { feature: 'Artisan Cards', emoji: '🎴', color: '#f59e0b', icon: Music,
     prompt: 'birthday card for grandma with flowers...',
     thinking: 'Crafting premium card design...',
@@ -722,8 +724,16 @@ export default function Landing() {
                <div>
                   <h4 className="text-white font-bold text-sm mb-6 uppercase tracking-widest">Connect</h4>
                   <ul className="space-y-4 text-sm text-textMuted">
-                     <li><a href="https://github.com/sundramsharma07" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub</a></li>
-                     <li><a href="https://www.linkedin.com/in/sundaram-sharma-108a1b297/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">LinkedIn</a></li>
+                     <li>
+                       <a href="https://github.com/sundramsharma07" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors group">
+                         <FaGithub className="group-hover:scale-110 transition-transform" /> GitHub
+                       </a>
+                     </li>
+                     <li>
+                       <a href="https://www.linkedin.com/in/sundaram-sharma-108a1b297/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors group">
+                         <FaLinkedin className="group-hover:scale-110 transition-transform" /> LinkedIn
+                       </a>
+                     </li>
                   </ul>
                </div>
             </div>

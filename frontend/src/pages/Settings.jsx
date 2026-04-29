@@ -16,7 +16,8 @@ import {
   Clock,
   Smartphone,
   Cpu,
-  Sparkles
+  Sparkles,
+  Settings as SettingsIcon
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -136,7 +137,7 @@ export default function Settings() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
         <div>
            <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-widest mb-4 border border-primary/20 px-3 py-1 rounded-full bg-primary/5 w-fit">
-              <Settings size={12} className="text-primary" /> Studio Preferences
+              <SettingsIcon size={12} className="text-primary" /> Studio Preferences
            </div>
            <h2 className="text-5xl font-serif font-bold tracking-tighter text-white">Workspace Control</h2>
            <p className="text-textMuted mt-4 text-lg italic max-w-xl leading-relaxed">

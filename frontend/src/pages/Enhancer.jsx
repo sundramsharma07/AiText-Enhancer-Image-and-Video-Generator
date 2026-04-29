@@ -170,7 +170,7 @@ export default function Enhancer() {
       
       <div className="max-w-7xl mx-auto h-full flex flex-col gap-8 relative z-10">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 flex-wrap">
             <div>
                <div className="flex items-center gap-3 mb-2">
                   <StatusPill status={status} />
@@ -215,12 +215,12 @@ export default function Enhancer() {
                    </button>
                 </div>
 
-                <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.08] p-1.5 rounded-2xl">
+                <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.08] p-1.5 rounded-2xl flex-wrap justify-center md:justify-end">
                    {['Professional', 'Creative', 'Academic'].map(t => (
                      <button
                        key={t}
                        onClick={() => setTone(t)}
-                       className={`px-6 py-2 rounded-xl text-xs font-bold transition-all ${
+                       className={`px-4 sm:px-6 py-2 rounded-xl text-[10px] sm:text-xs font-bold transition-all ${
                          tone === t 
                            ? 'bg-primary text-white shadow-lg' 
                            : 'text-textMuted hover:text-white hover:bg-white/[0.03]'
@@ -333,12 +333,12 @@ export default function Enhancer() {
           {/* MAIN CANVAS */}
           <div className="lg:col-span-8 flex flex-col">
             <div className="glass-panel flex-1 rounded-[40px] border-white/50 relative overflow-hidden flex flex-col">
-               <div className="px-8 py-5 border-b border-white/[0.05] flex items-center justify-between bg-white/[0.01]">
+               <div className="px-4 sm:px-8 py-5 border-b border-white/[0.05] flex items-center justify-between bg-white/[0.01] flex-wrap gap-4">
                   <div className="flex items-center gap-3">
                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary"><Star size={16} fill="currentColor" /></div>
                      <span className="font-serif font-bold text-xl tracking-tight">AI Canvas</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2">
                       {/* Font Selector */}
                       <div className="flex bg-white/[0.03] border border-white/[0.08] p-1 rounded-xl mr-4 hidden md:flex">
                         {[
@@ -384,7 +384,7 @@ export default function Enhancer() {
                      <button 
                        onClick={handleSpeak}
                        title="Listen to Text" 
-                       className="p-3 rounded-xl hover:bg-white/[0.05] transition-colors text-textMuted group"
+                       className="p-2 sm:p-3 rounded-xl hover:bg-white/[0.05] transition-colors text-textMuted group"
                      >
                         <Volume2 size={20} className="group-hover:text-white" />
                      </button>
@@ -435,8 +435,8 @@ export default function Enhancer() {
                   </AnimatePresence>
                </div>
 
-               <div className="px-8 py-4 bg-white/[0.02] border-t border-white/[0.05] flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted">
-                  <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />Live Engine: Pollinations Vision / GPT-4o</div>
+               <div className="px-4 sm:px-8 py-4 bg-white/[0.02] border-t border-white/[0.05] flex flex-col sm:flex-row justify-between items-center gap-4 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-textMuted">
+                  <div className="flex items-center gap-2 text-center sm:text-left"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />Live Engine: Pollinations Vision / GPT-4o</div>
                   <div>Status: Stable</div>
                </div>
             </div>
