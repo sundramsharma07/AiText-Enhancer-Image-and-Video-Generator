@@ -13,9 +13,12 @@ import {
   Monitor,
   Volume2,
   Music,
-  AlertCircle
+  AlertCircle,
+  UploadCloud
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { publishShowcasePost, urlToBlob } from '../utils/showcase';
+import { saveGenerationHistory } from '../utils/history';
 
 const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
 
@@ -49,6 +52,7 @@ export default function CreatorLab() {
   const [status, setStatus]       = useState('idle');
   const [resultUrl, setResultUrl] = useState('');
   const [errorMsg, setErrorMsg]   = useState('');
+  const [isPosting, setIsPosting] = useState(false);
   const abortRef = useRef(null);
 
   // Clean up blob URLs on unmount / before next generation
@@ -72,7 +76,11 @@ export default function CreatorLab() {
     const controller = new AbortController();
     abortRef.current = controller;
 
-    const endpoint = type === 'audio' ? '/generate/audio' : '/generate/image';
+    const endpoint = type === 'audio'
+      ? '/generate/audio'
+      : type === 'video'
+      ? '/generate/video'
+      : '/generate/image';
     const body = type === 'image'
       ? { prompt, width: 1024, height: 1024 }
       : type === 'video'
@@ -105,6 +113,13 @@ export default function CreatorLab() {
 
       setResultUrl(objectUrl);
       setStatus('done');
+      saveGenerationHistory({
+        token,
+        title: `Creator Lab ${type}`,
+        originalText: prompt,
+        enhancedText: `${type[0].toUpperCase()}${type.slice(1)} generated successfully.`,
+        tone: 'Creator Lab'
+      }).catch((error) => console.error('Creator Lab history save failed:', error));
 
     } catch (err) {
       if (err.name === 'AbortError') {
@@ -126,6 +141,43 @@ export default function CreatorLab() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleShare = async () => {
+    if (!resultUrl) return;
+    const message = `Created with PEN AI Creator Lab: ${prompt}`;
+    try {
+      if (navigator.share) await navigator.share({ title: 'PEN AI creation', text: message });
+      else {
+        await navigator.clipboard.writeText(message);
+        alert('Creation details copied to your clipboard.');
+      }
+    } catch (error) {
+      if (error.name !== 'AbortError') console.error('Share failed:', error);
+    }
+  };
+
+  const handlePostToShowcase = async () => {
+    if (!resultUrl) return;
+    setIsPosting(true);
+    try {
+      const isImage = type === 'image';
+      const imageBlob = isImage ? await urlToBlob(resultUrl) : undefined;
+      await publishShowcasePost({
+        token,
+        title: prompt.slice(0, 80) || `Creator Lab ${type}`,
+        description: isImage ? prompt : `${type[0].toUpperCase()}${type.slice(1)} created from: ${prompt}`,
+        prompt,
+        category: 'creator-lab',
+        mediaType: isImage ? 'image' : 'text',
+        imageBlob: isImage ? imageBlob : undefined
+      });
+      alert('Posted to the public showcase.');
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setIsPosting(false);
+    }
   };
 
   const switchType = (t) => {
@@ -222,7 +274,7 @@ export default function CreatorLab() {
                     type === 'video' ? 'Describe a cinematic sequence...' :
                                       'Describe an atmospheric soundscape...'
                   }
-                  className="w-full bg-white/[0.02] border border-white/[0.08] rounded-2xl p-6 min-h-[180px] text-white outline-none focus:border-primary/50 transition-all resize-none text-base font-medium placeholder:text-textMuted/20 shadow-inner"
+                  className="w-full bg-white border border-[#e3e6f3] rounded-2xl p-6 min-h-[180px] text-textMain outline-none focus:border-primary/50 transition-all resize-none text-base font-medium placeholder:text-textMuted/60 shadow-sm"
                 />
 
                 <div className="mt-8 flex flex-col gap-4">
@@ -284,17 +336,26 @@ export default function CreatorLab() {
                   <button
                     onClick={handleDownload}
                     disabled={status !== 'done' || !resultUrl}
-                    className="w-12 h-12 rounded-xl hover:bg-white/[0.05] flex items-center justify-center text-textMuted hover:text-white transition-all disabled:opacity-20 border border-transparent hover:border-white/10"
+                    className="w-12 h-12 rounded-xl border border-[#e3e6f3] bg-white hover:bg-[#f3f5ff] flex items-center justify-center text-textMuted hover:text-textMain transition-all disabled:opacity-20"
                     title="Download Media"
                   >
                     <Download size={20} />
                   </button>
                   <button
+                    onClick={handleShare}
                     disabled={status !== 'done' || !resultUrl}
-                    className="w-12 h-12 rounded-xl hover:bg-white/[0.05] flex items-center justify-center text-textMuted hover:text-white transition-all disabled:opacity-20 border border-transparent hover:border-white/10"
+                    className="w-12 h-12 rounded-xl border border-[#e3e6f3] bg-white hover:bg-[#f3f5ff] flex items-center justify-center text-textMuted hover:text-textMain transition-all disabled:opacity-20"
                     title="Share Creation"
                   >
                     <Share2 size={20} />
+                  </button>
+                  <button
+                    onClick={handlePostToShowcase}
+                    disabled={status !== 'done' || !resultUrl || isPosting}
+                    className="flex h-12 items-center gap-2 rounded-xl border border-primary/30 bg-primary/10 px-4 text-[10px] font-bold uppercase tracking-widest text-primary transition-all hover:bg-primary hover:text-white disabled:opacity-30"
+                    title="Publish this creation to Showcase"
+                  >
+                    <UploadCloud size={16} /> {isPosting ? 'Publishing' : 'Publish to Showcase'}
                   </button>
                 </div>
               </div>

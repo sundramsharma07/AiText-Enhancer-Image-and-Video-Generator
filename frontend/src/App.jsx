@@ -9,9 +9,14 @@ import History from './pages/History';
 import Settings from './pages/Settings';
 import ArtisanCards from './pages/ArtisanCards';
 import PoetryStudio from './pages/PoetryStudio';
+import ShayariGenerator from './pages/ShayariGenerator';
 import CreatorLab from './pages/CreatorLab';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import ContactUs from './pages/ContactUs';
+import AboutUs from './pages/AboutUs';
+import Info from './pages/Info';
+import Showcase from './pages/Showcase';
 import DashboardLayout from './components/DashboardLayout';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -35,8 +40,10 @@ function Scaffold() {
                            location.pathname.startsWith('/enhancer') || 
                            location.pathname.startsWith('/creator-lab') ||
                            location.pathname.startsWith('/artisan-cards') ||
-                           location.pathname.startsWith('/poetry-studio');
+                           location.pathname.startsWith('/poetry-studio') ||
+                           location.pathname.startsWith('/shayari-generator');
   const isAuthRoute = location.pathname === '/auth';
+  const isMarketingRoute = ['/', '/about', '/info', '/contact', '/showcase'].includes(location.pathname);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -59,7 +66,7 @@ function Scaffold() {
         }}
       />
       
-      {!isDashboardRoute && !isAuthRoute && <Navbar />}
+      {!isDashboardRoute && !isAuthRoute && !isMarketingRoute && <Navbar />}
       
       {isDashboardRoute ? (
         <Routes>
@@ -69,6 +76,7 @@ function Scaffold() {
             <Route path="/creator-lab" element={<CreatorLab />} />
             <Route path="/artisan-cards" element={<ArtisanCards />} />
             <Route path="/poetry-studio" element={<PoetryStudio />} />
+            <Route path="/shayari-generator" element={<ShayariGenerator />} />
             <Route path="/dashboard/history" element={<History />} />
             <Route path="/dashboard/settings" element={<Settings />} />
             <Route path="/dashboard/*" element={<Dashboard />} />
@@ -81,6 +89,10 @@ function Scaffold() {
             <Route path="/auth" element={<Auth />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/info" element={<Info />} />
+            <Route path="/showcase" element={<Showcase />} />
           </Routes>
         </main>
       )}

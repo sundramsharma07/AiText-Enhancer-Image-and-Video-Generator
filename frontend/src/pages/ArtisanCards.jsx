@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Download, Wand2, Type, Image as ImageIcon, Send, Share2, Layers, Check, ChevronRight } from 'lucide-react';
+import { Sparkles, Download, Wand2, Type, Image as ImageIcon, Send, Share2, Layers, Check, ChevronRight, UploadCloud } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { useAuth } from '../context/AuthContext';
+import { publishShowcasePost } from '../utils/showcase';
+import { saveGenerationHistory } from '../utils/history';
 
 const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
 
@@ -20,6 +22,7 @@ export default function ArtisanCards() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [cardImage, setCardImage] = useState(null);
   const [generatingStep, setGeneratingStep] = useState(0);
+  const [isPosting, setIsPosting] = useState(false);
   const cardRef = useRef(null);
 
   const handleGenerate = async () => {
@@ -49,6 +52,13 @@ export default function ArtisanCards() {
       if (cardImage) URL.revokeObjectURL(cardImage); // Clean up old URL
       setCardImage(URL.createObjectURL(blob));
       setGeneratingStep(2);
+      saveGenerationHistory({
+        token,
+        title: `${activeTheme.label} artisan card`,
+        originalText: text,
+        enhancedText: 'Greeting card artwork generated successfully.',
+        tone: activeTheme.label
+      }).catch((error) => console.error('Artisan Card history save failed:', error));
     } catch (error) {
       console.error("Card generation failed:", error);
       alert("Neural synthesis failed. Please try again.");
@@ -82,6 +92,33 @@ export default function ArtisanCards() {
      }
   };
 
+  const handlePostToShowcase = async () => {
+    if (!cardRef.current || !cardImage) return;
+    setIsPosting(true);
+    try {
+      const canvas = await html2canvas(cardRef.current, {
+        useCORS: true,
+        backgroundColor: null,
+        scale: 2
+      });
+      const imageBlob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+      await publishShowcasePost({
+        token,
+        title: `${activeTheme.label} artisan card`,
+        description: text,
+        prompt: `${activeTheme.prompt} ${text}`,
+        category: 'artisan-designs',
+        mediaType: 'image',
+        imageBlob
+      });
+      alert('Card posted to the public showcase.');
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setIsPosting(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-10 pb-20">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
@@ -89,9 +126,9 @@ export default function ArtisanCards() {
            <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-widest mb-4 border border-primary/20 px-3 py-1 rounded-full bg-primary/5 w-fit">
               <Sparkles size={12} /> Digital Synthesis
            </div>
-           <h2 className="text-5xl font-serif font-bold tracking-tighter text-white">Artisan Cards</h2>
+           <h2 className="text-5xl font-serif font-bold tracking-tighter text-textMain">Artisan Cards</h2>
            <p className="text-textMuted mt-4 text-lg italic leading-relaxed max-w-2xl">
-              Turn your words into <span className="text-white">visual legacies</span>. Generate unique greeting cards powered by neural imagination.
+              Turn your words into <span className="text-textMain">visual legacies</span>. Generate unique greeting cards powered by neural imagination.
            </p>
         </div>
 
@@ -121,7 +158,7 @@ export default function ArtisanCards() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Write your heartfelt message here... (e.g., Happy Birthday to the most amazing person!)"
-                className="w-full h-40 bg-white/[0.03] border border-white/[0.08] rounded-3xl p-6 text-white outline-none focus:bg-white/[0.05] focus:border-primary/50 transition-all resize-none placeholder:text-textMuted/30 font-medium"
+                className="w-full h-40 bg-white border border-[#e3e6f3] rounded-3xl p-6 text-textMain outline-none focus:bg-white focus:border-primary/50 transition-all resize-none placeholder:text-textMuted/60 font-medium shadow-sm"
               />
            </div>
 
@@ -186,12 +223,12 @@ export default function ArtisanCards() {
                          animate={{ y: 0, opacity: 1 }}
                          transition={{ delay: 0.5 }}
                        >
-                          <p className="text-white font-serif italic text-3xl leading-relaxed drop-shadow-2xl px-4">
+                          <p className="text-textMain font-serif italic text-3xl leading-relaxed drop-shadow-2xl px-4">
                             "{text}"
                           </p>
-                          <div className="mt-8 flex items-center justify-center gap-2 opacity-50">
+                          <div className="mt-8 flex items-center justify-center gap-2 opacity-80">
                              <div className="w-8 h-px bg-white/40" />
-                             <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white">PEN AI Studio</span>
+                             <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary">PEN AI Studio</span>
                              <div className="w-8 h-px bg-white/40" />
                           </div>
                        </motion.div>
@@ -200,9 +237,9 @@ export default function ArtisanCards() {
                 ) : (
                   <div className="text-center px-12 group-hover:scale-105 transition-transform duration-700">
                     <div className="w-20 h-20 rounded-[32px] bg-white/[0.05] border border-white/[0.08] flex items-center justify-center mb-8 mx-auto">
-                       <ImageIcon size={32} className="text-white/20" />
+                       <ImageIcon size={32} className="text-textMuted/40" />
                     </div>
-                    <h4 className="text-xl font-serif font-bold text-white mb-3">Awaiting Canvas</h4>
+                    <h4 className="text-xl font-serif font-bold text-textMain mb-3">Awaiting Canvas</h4>
                     <p className="text-sm text-textMuted leading-relaxed">
                       Your visual artifact will materialize here once the neural synthesis begins.
                     </p>
@@ -225,7 +262,7 @@ export default function ArtisanCards() {
                        </div>
                     </div>
                     <div>
-                       <p className="text-white capitalize font-bold tracking-tight text-xl">
+                       <p className="text-textMain capitalize font-bold tracking-tight text-xl">
                           {generatingStep === 1 ? 'Capturing Frequency' : 'Rendering Artifact'}
                        </p>
                        <p className="text-primary text-[10px] uppercase font-bold tracking-widest mt-2">Neural Link Active</p>
@@ -235,15 +272,20 @@ export default function ArtisanCards() {
            </div>
 
            {cardImage && (
-             <div className="flex items-center gap-4">
+             <div className="glass-panel flex flex-col gap-3 rounded-3xl p-4 sm:flex-row sm:items-center">
                 <button 
                   onClick={handleDownload}
-                  className="flex-1 flex items-center justify-center gap-3 bg-white text-black py-5 rounded-3xl font-bold hover:bg-primary hover:text-white transition-all shadow-2xl"
+                  className="flex-1 flex items-center justify-center gap-3 rounded-2xl border border-[#e3e6f3] bg-white py-4 font-bold text-textMain transition-all hover:bg-[#f3f5ff]"
                 >
-                   <Download size={20} /> Collect Digital Legacy
+                   <Download size={20} /> Download Card
                 </button>
-                <button className="p-5 rounded-3xl bg-white/[0.05] border border-white/[0.08] text-white hover:bg-white/[0.1] transition-all">
-                   <Share2 size={20} />
+                <button
+                  onClick={handlePostToShowcase}
+                  disabled={isPosting}
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-4 text-xs font-bold uppercase tracking-widest text-black shadow-lg shadow-primary/20 transition-all hover:bg-secondary disabled:opacity-50"
+                  title="Publish card to Showcase"
+                >
+                   <UploadCloud size={18} /> {isPosting ? 'Publishing' : 'Publish to Showcase'}
                 </button>
              </div>
            )}

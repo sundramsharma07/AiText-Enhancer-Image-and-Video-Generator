@@ -2,115 +2,141 @@ import express from 'express';
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
+const POLLINATIONS_BASE = 'https://gen.pollinations.ai';
 
-const POLLINATIONS_API_KEY = process.env.POLLINATIONS_API_KEY;
-const POLLINATIONS_BASE    = 'https://gen.pollinations.ai';
-
-/**
- * POST /api/generate/image
- * Body: { prompt: string, width?: number, height?: number }
- *
- * Proxies to Pollinations image API and forwards the binary response.
- * The sk_ API key never leaves the server.
- */
-router.post('/image', protect, async (req, res) => {
-    const { prompt, width = 1024, height = 1024 } = req.body;
-
-    if (!prompt?.trim()) {
-        return res.status(400).json({ error: 'Prompt is required.' });
+function pollinationsHeaders() {
+    const apiKey = process.env.POLLINATIONS_API_KEY?.trim();
+    if (!apiKey || apiKey === 'your_pollinations_api_key_here') {
+        const error = new Error('POLLINATIONS_API_KEY is not configured on the server.');
+        error.status = 503;
+        throw error;
     }
+    return { Authorization: `Bearer ${apiKey}` };
+}
 
-    const encodedPrompt = encodeURIComponent(prompt.trim());
-    const seed          = Math.floor(Math.random() * 999999);
-    const url           = `${POLLINATIONS_BASE}/image/${encodedPrompt}?model=flux&width=${width}&height=${height}&enhance=true&seed=${seed}`;
+function validDimension(value, fallback) {
+    const dimension = Number.parseInt(value, 10);
+    return Number.isInteger(dimension) && dimension >= 256 && dimension <= 2048
+        ? dimension
+        : fallback;
+}
 
-    console.log(`[Generate/Image] → ${url}`);
+function timeoutSignal(milliseconds) {
+    // Node 18+ supports AbortSignal.timeout. The fallback keeps the proxy usable
+    // on older local Node installations too.
+    if (typeof AbortSignal.timeout === 'function') return AbortSignal.timeout(milliseconds);
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), milliseconds).unref?.();
+    return controller.signal;
+}
+
+async function sendBinaryGeneration(req, res, { kind, model, timeout }) {
+    const { prompt } = req.body;
+    if (!prompt?.trim()) return res.status(400).json({ error: 'Prompt is required.' });
+
+    const width = validDimension(req.body.width, 1024);
+    const height = validDimension(req.body.height, 1024);
+    const query = new URLSearchParams({
+        model,
+        width: String(width),
+        height: String(height),
+        seed: String(Math.floor(Math.random() * 1_000_000)),
+    });
+    const url = `${POLLINATIONS_BASE}/image/${encodeURIComponent(prompt.trim())}?${query}`;
 
     try {
         const upstream = await fetch(url, {
-            headers: { 'Authorization': `Bearer ${POLLINATIONS_API_KEY}` },
-            signal:  AbortSignal.timeout(90_000), // 90-second hard limit
+            headers: pollinationsHeaders(),
+            signal: timeoutSignal(timeout),
         });
 
         if (!upstream.ok) {
-            const text = await upstream.text().catch(() => '');
-            console.error(`[Generate/Image] Upstream ${upstream.status}: ${text.slice(0, 200)}`);
+            const details = (await upstream.text().catch(() => '')).slice(0, 300);
+            console.error(`[Generate/${kind}] Pollinations returned ${upstream.status}: ${details}`);
             return res.status(upstream.status).json({
-                error: `Image generation failed (upstream ${upstream.status}).`,
-                details: text.slice(0, 200),
+                error: `${kind} generation failed (Pollinations ${upstream.status}).`,
+                details,
             });
         }
 
-        // Buffer the entire response, then send it in one shot.
-        // This is simpler and avoids Web-Streams compatibility edge cases.
-        const buffer      = Buffer.from(await upstream.arrayBuffer());
-        const contentType = upstream.headers.get('content-type') || 'image/jpeg';
+        const buffer = Buffer.from(await upstream.arrayBuffer());
+        const contentType = upstream.headers.get('content-type') ||
+            (kind === 'Video' ? 'video/mp4' : 'image/jpeg');
+        res.set({
+            'Content-Type': contentType,
+            'Content-Length': buffer.length,
+            'Cache-Control': 'no-store',
+        }).send(buffer);
+    } catch (error) {
+        const timedOut = error.name === 'TimeoutError' || error.name === 'AbortError';
+        const status = error.status || (timedOut ? 504 : 502);
+        console.error(`[Generate/${kind}] ${error.message}`);
+        res.status(status).json({
+            error: timedOut ? `${kind} generation timed out. Please try again.` : `${kind} generation failed.`,
+            details: error.message,
+        });
+    }
+}
 
-        console.log(`[Generate/Image] OK — ${contentType}, ${buffer.length} bytes`);
+// Pollinations serves both still images and videos through /image/{prompt};
+// the selected model determines the returned media type.
+router.post('/image', protect, (req, res) =>
+    sendBinaryGeneration(req, res, { kind: 'Image', model: 'flux', timeout: 180_000 })
+);
 
-        res.setHeader('Content-Type',   contentType);
-        res.setHeader('Content-Length', buffer.length);
-        res.setHeader('Cache-Control',  'no-store');
-        res.send(buffer);
+router.post('/video', protect, (req, res) =>
+    sendBinaryGeneration(req, res, { kind: 'Video', model: 'ltx-2', timeout: 180_000 })
+);
 
-    } catch (err) {
-        if (err.name === 'TimeoutError') {
-            console.error('[Generate/Image] Request timed out after 90s.');
-            return res.status(504).json({ error: 'Image generation timed out. Please try again.' });
+router.post('/audio', protect, async (req, res) => {
+    const { prompt, voice = 'nova' } = req.body;
+    if (!prompt?.trim()) return res.status(400).json({ error: 'Prompt is required.' });
+
+    const url = `${POLLINATIONS_BASE}/audio/${encodeURIComponent(prompt.trim())}?${new URLSearchParams({ voice })}`;
+    try {
+        const upstream = await fetch(url, { headers: pollinationsHeaders(), signal: timeoutSignal(90_000) });
+        if (!upstream.ok) {
+            const details = (await upstream.text().catch(() => '')).slice(0, 300);
+            console.error(`[Generate/Audio] Pollinations returned ${upstream.status}: ${details}`);
+            return res.status(upstream.status).json({ error: `Audio generation failed (Pollinations ${upstream.status}).`, details });
         }
-        console.error('[Generate/Image] Unexpected error:', err.message);
-        res.status(500).json({ error: 'Image generation failed.', details: err.message });
+        const buffer = Buffer.from(await upstream.arrayBuffer());
+        res.set({
+            'Content-Type': upstream.headers.get('content-type') || 'audio/mpeg',
+            'Content-Length': buffer.length,
+            'Cache-Control': 'no-store',
+        }).send(buffer);
+    } catch (error) {
+        const timedOut = error.name === 'TimeoutError' || error.name === 'AbortError';
+        console.error(`[Generate/Audio] ${error.message}`);
+        res.status(error.status || (timedOut ? 504 : 502)).json({
+            error: timedOut ? 'Audio generation timed out. Please try again.' : 'Audio generation failed.',
+            details: error.message,
+        });
     }
 });
 
-/**
- * POST /api/generate/audio
- * Body: { prompt: string, voice?: string }
- */
-router.post('/audio', protect, async (req, res) => {
-    const { prompt, voice = 'nova' } = req.body;
+router.post('/text', protect, async (req, res) => {
+    const { prompt, system = 'You are a helpful assistant.', model = 'openai' } = req.body;
+    if (!prompt?.trim()) return res.status(400).json({ error: 'Prompt is required.' });
 
-    if (!prompt?.trim()) {
-        return res.status(400).json({ error: 'Prompt is required.' });
-    }
-
-    const encodedPrompt = encodeURIComponent(prompt.trim());
-    const url           = `${POLLINATIONS_BASE}/audio/${encodedPrompt}?model=elevenlabs&voice=${voice}`;
-
-    console.log(`[Generate/Audio] → ${url}`);
-
+    const query = new URLSearchParams({ model, system: system.trim() });
+    const url = `${POLLINATIONS_BASE}/text/${encodeURIComponent(prompt.trim())}?${query}`;
     try {
-        const upstream = await fetch(url, {
-            headers: { 'Authorization': `Bearer ${POLLINATIONS_API_KEY}` },
-            signal:  AbortSignal.timeout(30_000),
-        });
-
+        const upstream = await fetch(url, { headers: pollinationsHeaders(), signal: timeoutSignal(90_000) });
         if (!upstream.ok) {
-            const text = await upstream.text().catch(() => '');
-            console.error(`[Generate/Audio] Upstream ${upstream.status}: ${text.slice(0, 200)}`);
-            return res.status(upstream.status).json({
-                error: `Audio generation failed (upstream ${upstream.status}).`,
-                details: text.slice(0, 200),
-            });
+            const details = (await upstream.text().catch(() => '')).slice(0, 300);
+            console.error(`[Generate/Text] Pollinations returned ${upstream.status}: ${details}`);
+            return res.status(upstream.status).json({ error: `Text generation failed (Pollinations ${upstream.status}).`, details });
         }
-
-        const buffer      = Buffer.from(await upstream.arrayBuffer());
-        const contentType = upstream.headers.get('content-type') || 'audio/mpeg';
-
-        console.log(`[Generate/Audio] OK — ${contentType}, ${buffer.length} bytes`);
-
-        res.setHeader('Content-Type',   contentType);
-        res.setHeader('Content-Length', buffer.length);
-        res.setHeader('Cache-Control',  'no-store');
-        res.send(buffer);
-
-    } catch (err) {
-        if (err.name === 'TimeoutError') {
-            console.error('[Generate/Audio] Request timed out.');
-            return res.status(504).json({ error: 'Audio generation timed out.' });
-        }
-        console.error('[Generate/Audio] Error:', err.message);
-        res.status(500).json({ error: 'Audio generation failed.', details: err.message });
+        res.set('Cache-Control', 'no-store').send(await upstream.text());
+    } catch (error) {
+        const timedOut = error.name === 'TimeoutError' || error.name === 'AbortError';
+        console.error(`[Generate/Text] ${error.message}`);
+        res.status(error.status || (timedOut ? 504 : 502)).json({
+            error: timedOut ? 'Text generation timed out. Please try again.' : 'Text generation failed.',
+            details: error.message,
+        });
     }
 });
 

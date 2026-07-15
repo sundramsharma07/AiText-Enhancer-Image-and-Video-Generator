@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function DashboardLayout() {
   const { user } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Close sidebar only if we are on mobile
   const closeSidebar = () => {
@@ -18,10 +19,10 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="flex bg-app-bg min-h-screen text-textMain relative overflow-hidden">
-      {/* Sidebar - Desktop */}
-      <div className="hidden lg:flex w-72 h-screen sticky top-0 border-r border-white/[0.05] z-30">
-        <Sidebar />
+    <div className="dashboard-light flex bg-app-bg min-h-screen text-textMain relative overflow-hidden">
+      {/* Sidebar - Desktop (collapsible) */}
+      <div className={`hidden lg:flex ${isSidebarCollapsed ? 'w-20' : 'w-72'} h-screen sticky top-0 border-r border-[#dfe3f2] z-30 transition-[width] duration-300 ease-out overflow-hidden`}>
+        <Sidebar isCollapsed={isSidebarCollapsed} toggleCollapse={() => setIsSidebarCollapsed(s => !s)} />
       </div>
 
       {/* Sidebar - Mobile */}
@@ -34,7 +35,7 @@ export default function DashboardLayout() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsSidebarOpen(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-[#34364f]/35 backdrop-blur-sm"
             />
             
             {/* Sidebar content */}
@@ -53,12 +54,12 @@ export default function DashboardLayout() {
       
       <div className="flex-1 flex flex-col relative z-10 h-screen overflow-hidden">
         {/* Top Header */}
-        <header className="sticky top-0 w-full px-4 md:px-12 py-4 md:py-6 flex items-center justify-between z-40 bg-[#030712]/40 backdrop-blur-3xl border-b border-white/[0.03]">
+        <header className="sticky top-0 w-full px-4 md:px-12 py-4 md:py-6 flex items-center justify-between z-40 bg-white/75 backdrop-blur-3xl border-b border-[#dfe3f2]">
           <div className="flex items-center gap-4 md:gap-8 w-full max-w-2xl">
             {/* Mobile Menu Toggle */}
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="lg:hidden w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-textMuted hover:text-white transition-all"
+              className="lg:hidden w-10 h-10 rounded-xl bg-white border border-[#e3e6f3] flex items-center justify-center text-textMuted hover:text-primary transition-all"
             >
               {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -68,7 +69,7 @@ export default function DashboardLayout() {
               <input 
                 type="text" 
                 placeholder="Search your collection..." 
-                className="w-full pl-16 pr-8 py-3.5 bg-white/[0.02] border border-white/[0.05] rounded-3xl text-sm outline-none focus:bg-white/[0.04] focus:border-primary/50 focus:ring-8 focus:ring-primary/5 transition-all font-medium placeholder:text-textMuted/30 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
+                className="w-full pl-16 pr-8 py-3.5 bg-white border border-[#e3e6f3] rounded-3xl text-sm outline-none focus:bg-white focus:border-primary/50 focus:ring-8 focus:ring-primary/10 transition-all font-medium placeholder:text-textMuted/60 shadow-sm"
               />
             </div>
 
@@ -82,33 +83,34 @@ export default function DashboardLayout() {
           </div>
           
           <div className="flex items-center gap-3 md:gap-6">
-            <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.05] p-1 rounded-2xl">
+
+            <div className="flex items-center gap-2 bg-white border border-[#e3e6f3] p-1 rounded-2xl shadow-sm">
                <button 
                 onClick={() => alert("Notifications are synchronized with your artistic pulse. No new signals found.")}
                 title="Notifications"
-                className="w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center hover:bg-white/[0.05] transition-all text-textMuted hover:text-white relative group"
+                className="w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center hover:bg-[#f3f5ff] transition-all text-textMuted hover:text-primary relative group"
                >
                   <Bell size={18} />
-                  <span className="absolute top-3 right-3 w-2 h-2 bg-emerald-500 rounded-full border-2 border-app-bg"></span>
+                  <span className="absolute top-3 right-3 w-2 h-2 bg-emerald-500 rounded-full border-2 border-white"></span>
                </button>
                <Link 
                 to="/dashboard/settings" 
                 title="Studio Settings"
-                className="w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center hover:bg-white/[0.05] transition-all text-textMuted hover:text-white"
+                className="w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center hover:bg-[#f3f5ff] transition-all text-textMuted hover:text-primary"
                >
                   <SettingsIcon size={18} />
                </Link>
             </div>
             
-            <div className="flex items-center gap-4 md:pl-6 md:border-l md:border-white/[0.05]">
+            <div className="flex items-center gap-4 md:pl-6 md:border-l md:border-[#e3e6f3]">
                <div className="text-right hidden sm:block">
-                  <p className="text-sm font-bold text-white capitalize tracking-tight">{user?.username || 'Creative User'}</p>
+                  <p className="text-sm font-bold text-textMain capitalize tracking-tight">{user?.username || 'Creative User'}</p>
                   <div className="flex items-center justify-end gap-1 text-[10px] text-primary font-bold uppercase tracking-widest">
                      <Crown size={10} fill="currentColor" /> Artisan
                   </div>
                </div>
                <Link to="/dashboard/settings" className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-tr from-primary to-secondary p-[1px] transition-transform hover:scale-105 active:scale-95 group">
-                  <div className="w-full h-full rounded-[11px] md:rounded-[15px] bg-slate-900 overflow-hidden border border-white/10">
+                  <div className="w-full h-full rounded-[11px] md:rounded-[15px] bg-white overflow-hidden border border-white">
                      <img src={`https://ui-avatars.com/api/?name=${user?.username || 'A'}&background=random&color=white`} alt="Avatar" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                   </div>
                </Link>

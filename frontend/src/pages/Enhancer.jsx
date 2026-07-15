@@ -18,7 +18,7 @@ import {
   Volume2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-
+import { publishShowcasePost } from '../utils/showcase';
 const TypewriterText = ({ text }) => {
   const [displayedText, setDisplayedText] = useState("");
   
@@ -67,6 +67,7 @@ export default function Enhancer() {
   const [currentFont, setCurrentFont] = useState("serif"); // serif, sans, script, mono
   const [copied, setCopied] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [isPosting, setIsPosting] = useState(false);
   const fileInputRef = useRef(null);
   const { token } = useAuth();
 
@@ -123,6 +124,7 @@ export default function Enhancer() {
       
       setEnhancedText(data.enhancedText);
       setStatus("done");
+
     } catch (err) {
       console.error(err);
       setErrorMsg(err.message);
@@ -161,6 +163,26 @@ export default function Enhancer() {
     utterance.rate = 0.9; // Slightly slower for better clarity
     utterance.pitch = 1;
     window.speechSynthesis.speak(utterance);
+  };
+
+  const handlePostToShowcase = async () => {
+    if (!enhancedText) return;
+    setIsPosting(true);
+    try {
+      await publishShowcasePost({
+        token,
+        title: `Enhanced text (${tone} tone)`,
+        description: enhancedText,
+        prompt: originalText || rawTextInput,
+        category: 'story-generated',
+        mediaType: 'text'
+      });
+      alert('Text published to the public showcase.');
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setIsPosting(false);
+    }
   };
 
   return (
@@ -293,7 +315,7 @@ export default function Enhancer() {
                       value={rawTextInput}
                       onChange={(e) => setRawTextInput(e.target.value)}
                       placeholder="Type or paste your messy text here..."
-                      className="flex-1 w-full bg-white/[0.02] border border-white/[0.08] rounded-2xl p-6 text-sm text-white outline-none focus:border-primary/50 transition-all resize-none font-medium placeholder:text-textMuted/30"
+                      className="flex-1 w-full bg-white border border-[#e3e6f3] rounded-2xl p-6 text-sm text-textMain outline-none focus:border-primary/50 transition-all resize-none font-medium placeholder:text-textMuted/60 shadow-sm"
                     />
                  </div>
                )}
@@ -363,30 +385,37 @@ export default function Enhancer() {
                      <button 
                        onClick={() => { if (enhancedText) { navigator.clipboard.writeText(enhancedText); setCopied(true); setTimeout(() => setCopied(false), 2000); } }}
                        title="Copy to Clipboard" 
-                       className="p-3 rounded-xl hover:bg-white/[0.05] transition-colors text-textMuted group relative"
+                       className="p-3 rounded-xl border border-[#e3e6f3] bg-white hover:bg-[#f3f5ff] transition-colors text-textMuted group relative"
                      >
-                        {copied ? <Check size={20} className="text-emerald-500" /> : <Copy size={20} className="group-hover:text-white" />}
+                        {copied ? <Check size={20} className="text-emerald-500" /> : <Copy size={20} className="group-hover:text-textMain" />}
                      </button>
                      <button 
                        onClick={handleDownload}
                        title="Download Text" 
-                       className="p-3 rounded-xl hover:bg-white/[0.05] transition-colors text-textMuted group"
+                       className="p-3 rounded-xl border border-[#e3e6f3] bg-white hover:bg-[#f3f5ff] transition-colors text-textMuted group"
                      >
-                        <Download size={20} className="group-hover:text-white" />
+                        <Download size={20} className="group-hover:text-textMain" />
                      </button>
                      <button 
                        onClick={handleShare}
                        title="Share Content" 
-                       className="p-3 rounded-xl hover:bg-white/[0.05] transition-colors text-textMuted group"
+                       className="p-3 rounded-xl border border-[#e3e6f3] bg-white hover:bg-[#f3f5ff] transition-colors text-textMuted group"
                      >
-                        <Share2 size={20} className="group-hover:text-white" />
+                        <Share2 size={20} className="group-hover:text-textMain" />
                      </button>
                      <button 
                        onClick={handleSpeak}
                        title="Listen to Text" 
-                       className="p-2 sm:p-3 rounded-xl hover:bg-white/[0.05] transition-colors text-textMuted group"
+                       className="p-2 sm:p-3 rounded-xl border border-[#e3e6f3] bg-white hover:bg-[#f3f5ff] transition-colors text-textMuted group"
                      >
-                        <Volume2 size={20} className="group-hover:text-white" />
+                        <Volume2 size={20} className="group-hover:text-textMain" />
+                     </button>
+                     <button
+                       onClick={handlePostToShowcase}
+                       disabled={!enhancedText || isPosting}
+                       className="flex items-center gap-2 rounded-xl bg-primary px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-white shadow-lg shadow-primary/20 transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+                     >
+                       <UploadCloud size={16} /> {isPosting ? 'Publishing' : 'Publish'}
                      </button>
                   </div>
                </div>
@@ -420,7 +449,7 @@ export default function Enhancer() {
                           key="content" 
                           initial={{ opacity: 0 }} 
                           animate={{ opacity: 1 }} 
-                          className={`text-2xl lg:text-4xl leading-[1.6] text-white/90 ${
+                          className={`text-2xl lg:text-4xl leading-[1.6] text-textMain ${
                             currentFont === 'serif' ? 'font-serif' : 
                             currentFont === 'sans' ? 'font-sans' : 
                             currentFont === 'mono' ? 'font-mono' :

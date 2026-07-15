@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, ArrowLeft, ArrowRight, Sparkles, Compass, ChevronRight } from 'lucide-react';
-import { FaGithub, FaGoogle } from 'react-icons/fa';
+import { Mail, Lock, User, ArrowLeft, Sparkles, ChevronRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const InputField = ({ label, type, placeholder, icon: Icon, value, onChange }) => {
@@ -11,7 +10,7 @@ const InputField = ({ label, type, placeholder, icon: Icon, value, onChange }) =
   return (
     <div className="relative group">
       <label className={`absolute left-12 transition-all duration-300 pointer-events-none ${
-        isFocused || value ? '-top-3 text-[10px] text-primary font-bold uppercase tracking-widest' : 'top-3.5 text-textMuted text-sm'
+        isFocused || value ? '-top-3 text-[10px] text-primary font-bold uppercase tracking-widest bg-white px-1' : 'top-3.5 text-textMuted text-sm'
       }`}>
         {label}
       </label>
@@ -25,8 +24,8 @@ const InputField = ({ label, type, placeholder, icon: Icon, value, onChange }) =
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className={`w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-12 py-3.5 text-textMain outline-none transition-all ${
-            isFocused ? 'border-primary/50 bg-white/[0.08] shadow-[0_0_20px_rgba(168,85,247,0.1)]' : 'hover:border-white/20'
+          className={`w-full bg-white border border-[#e3e6f3] rounded-xl px-12 py-3.5 text-textMain outline-none transition-all ${
+            isFocused ? 'border-primary/50 bg-white shadow-[0_0_20px_rgba(216,58,232,0.12)]' : 'hover:border-primary/30'
           }`}
           placeholder={isFocused ? placeholder : ""}
         />
@@ -83,9 +82,7 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-app-bg text-textMain">
-      {/* Decorative Orbs */}
-      <div className="absolute top-[10%] left-[15%] w-64 h-64 bg-primary/10 rounded-full blur-[100px] animate-float" />
-      <div className="absolute bottom-[20%] right-[15%] w-80 h-80 bg-secondary/10 rounded-full blur-[120px] animate-float" style={{ animationDelay: '2s' }} />
+      <div className="soft-page-bg absolute inset-0 pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -98,13 +95,13 @@ export default function Auth() {
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
                 <Sparkles size={20} />
               </div>
-              <span className="text-2xl font-serif font-bold tracking-tighter">PEN AI</span>
+              <span className="text-2xl font-bold tracking-tight">PEN AI</span>
             </Link>
         </div>
 
-        <div className="glass-card rounded-3xl p-8 md:p-10 border-white/[0.05] relative overflow-hidden">
+        <div className="glass-card rounded-3xl p-8 md:p-10 relative overflow-hidden">
            {loading && (
-             <div className="absolute top-0 left-0 w-full h-1 overflow-hidden bg-white/[0.05]">
+             <div className="absolute top-0 left-0 w-full h-1 overflow-hidden bg-[#f3f5ff]">
                 <motion.div 
                   initial={{ x: '-100%' }}
                   animate={{ x: '100%' }}
@@ -115,8 +112,8 @@ export default function Auth() {
            )}
 
            <div className="text-center mb-10">
-              <h2 className="text-3xl font-serif font-bold mb-3 tracking-tight">
-                {isLogin ? "Welcome back Studio" : "Join the creative Studio"}
+              <h2 className="text-3xl font-bold mb-3 tracking-tight text-textMain">
+                {isLogin ? "Welcome back" : "Join the creative studio"}
               </h2>
               <p className="text-textMuted text-sm">
                  {isLogin 
@@ -203,7 +200,7 @@ export default function Auth() {
         <div className="text-center mt-8">
            <Link 
             to="/" 
-            className="inline-flex items-center gap-2 text-textMuted hover:text-white transition-colors text-xs font-bold uppercase tracking-widest"
+            className="inline-flex items-center gap-2 text-textMuted hover:text-primary transition-colors text-xs font-bold uppercase tracking-widest"
           >
             <ArrowLeft size={14} /> Back to Studio Entry
           </Link>

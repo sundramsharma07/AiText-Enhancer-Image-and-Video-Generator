@@ -103,9 +103,9 @@ export default function History() {
            <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-widest mb-4 border border-primary/20 px-3 py-1 rounded-full bg-primary/5 w-fit">
               <Sparkles size={12} /> Studio Archive
            </div>
-           <h2 className="text-4xl sm:text-5xl font-serif font-bold tracking-tighter text-white">Document History</h2>
+           <h2 className="text-4xl sm:text-5xl font-serif font-bold tracking-tighter text-textMain">Document History</h2>
            <p className="text-textMuted mt-4 text-base sm:text-lg italic leading-relaxed">
-              Every masterpiece you've ever crafted, <span className="text-white">preserved in time.</span>
+              Every masterpiece you've ever crafted, <span className="text-textMain">preserved in time.</span>
            </p>
         </div>
         
@@ -117,10 +117,10 @@ export default function History() {
               placeholder="Search history..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-4 py-3.5 bg-white/[0.03] border border-white/[0.08] rounded-2xl text-sm outline-none focus:bg-white/[0.05] focus:border-primary/50 transition-all w-full lg:w-72 text-textMain"
+              className="pl-12 pr-4 py-3.5 bg-white border border-[#e3e6f3] rounded-2xl text-sm outline-none focus:bg-white focus:border-primary/50 transition-all w-full lg:w-72 text-textMain shadow-sm"
             />
           </div>
-          <button className="p-3.5 bg-white/[0.03] border border-white/[0.08] rounded-2xl text-textMuted hover:text-white transition-all shrink-0">
+          <button className="p-3.5 bg-white border border-[#e3e6f3] rounded-2xl text-textMuted hover:text-textMain transition-all shrink-0">
             <Filter size={16} />
           </button>
         </div>
@@ -168,8 +168,9 @@ export default function History() {
                             <FileText size={18} />
                           </div>
                           <div className="min-w-0">
-                            <p className="font-bold text-white group-hover:text-primary transition-colors tracking-tight truncate max-w-[200px]">{doc.title}</p>
+                            <p className="font-bold text-textMain group-hover:text-primary transition-colors tracking-tight truncate max-w-[240px]">{doc.title}</p>
                             <p className="text-[10px] text-textMuted font-medium uppercase tracking-widest mt-0.5">ID: {doc._id.substring(0,8)}</p>
+                            <p className="mt-1 max-w-[260px] truncate text-xs leading-5 text-textMuted">{doc.enhancedText}</p>
                           </div>
                         </div>
                       </td>
@@ -187,7 +188,7 @@ export default function History() {
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]" />
-                          <span className="text-[10px] font-bold text-white uppercase tracking-widest">Encoded</span>
+                          <span className="text-[10px] font-bold text-textMain uppercase tracking-widest">Encoded</span>
                         </div>
                       </td>
                       <td className="px-8 py-6">
@@ -195,7 +196,7 @@ export default function History() {
                           <button 
                             onClick={() => handleDownload(doc)}
                             title="Download" 
-                            className="p-2.5 rounded-xl hover:bg-white/[0.08] text-textMuted hover:text-white transition-all"
+                            className="p-2.5 rounded-xl hover:bg-[#f3f5ff] text-textMuted hover:text-textMain transition-all"
                           >
                              <Download size={16} />
                           </button>
@@ -229,7 +230,7 @@ export default function History() {
         ) : filteredDocs.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 opacity-20 text-center">
             <FileText size={48} className="mb-4 stroke-1 text-textMuted" />
-            <p className="font-serif text-xl text-white">No artifacts found in the void.</p>
+            <p className="font-serif text-xl text-textMain">No artifacts found in the void.</p>
             <p className="text-xs uppercase tracking-widest mt-2 text-textMuted">
               {searchTerm ? 'Try a different query' : 'Awaiting your first creation'}
             </p>
@@ -251,10 +252,11 @@ export default function History() {
                     <FileText size={18} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-white tracking-tight leading-tight truncate">{doc.title}</p>
+                    <p className="font-bold text-textMain tracking-tight leading-tight truncate">{doc.title}</p>
                     <p className="text-[10px] text-textMuted font-medium uppercase tracking-widest mt-0.5">
                       ID: {doc._id.substring(0, 8)}
                     </p>
+                    <p className="mt-2 line-clamp-2 text-xs leading-5 text-textMuted">{doc.enhancedText}</p>
                   </div>
                   {/* Status dot */}
                   <div className="flex items-center gap-1.5 shrink-0">
@@ -271,14 +273,14 @@ export default function History() {
                   <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider border border-primary/20">
                     {doc.toneUsed}
                   </span>
-                  <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Encoded</span>
+                  <span className="text-[10px] font-bold text-textMuted uppercase tracking-widest">Encoded</span>
                 </div>
 
                 {/* Card Action Row */}
                 <div className="flex items-center gap-2 mt-4">
                   <button 
                     onClick={() => handleDownload(doc)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-textMuted hover:text-white hover:bg-white/[0.06] transition-all text-xs font-bold uppercase tracking-wider"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white border border-[#e3e6f3] text-textMuted hover:text-textMain hover:bg-[#f3f5ff] transition-all text-xs font-bold uppercase tracking-wider"
                   >
                     <Download size={14} /> Download
                   </button>

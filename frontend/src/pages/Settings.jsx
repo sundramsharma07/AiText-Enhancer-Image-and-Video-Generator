@@ -23,8 +23,8 @@ import { useAuth } from '../context/AuthContext';
 
 const SettingSection = ({ title, description, children }) => (
   <div className="flex flex-col xl:flex-row gap-12 py-12 border-b border-white/[0.05] last:border-0">
-    <div className="xl:w-1/3">
-      <h3 className="text-2xl font-serif font-bold text-white mb-3 tracking-tight">{title}</h3>
+        <div className="xl:w-1/3">
+          <h3 className="text-2xl font-serif font-bold text-textMain mb-3 tracking-tight">{title}</h3>
       <p className="text-sm text-textMuted leading-relaxed max-w-sm">{description}</p>
     </div>
     <div className="xl:w-2/3">
@@ -47,10 +47,11 @@ const SettingInput = ({ label, value, type = "text", disabled = false, icon: Ico
         type={type} 
         value={value} 
         onChange={onChange}
+        readOnly={!onChange}
         placeholder={placeholder}
         disabled={disabled}
         className={`w-full pl-14 pr-6 py-4 rounded-2xl border border-white/[0.08] text-sm transition-all font-medium ${
-          disabled ? 'bg-white/[0.01] text-textMuted/50 cursor-not-allowed' : 'bg-white/[0.03] focus:bg-white/[0.05] focus:border-primary/50 outline-none text-white'
+          disabled ? 'bg-white/[0.01] text-textMuted/50 cursor-not-allowed' : 'bg-white/[0.03] focus:bg-white/[0.05] focus:border-primary/50 outline-none text-textMain'
         }`}
       />
     </div>
@@ -139,10 +140,10 @@ export default function Settings() {
            <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-widest mb-4 border border-primary/20 px-3 py-1 rounded-full bg-primary/5 w-fit">
               <SettingsIcon size={12} className="text-primary" /> Studio Preferences
            </div>
-           <h2 className="text-5xl font-serif font-bold tracking-tighter text-white">Workspace Control</h2>
-           <p className="text-textMuted mt-4 text-lg italic max-w-xl leading-relaxed">
-              Refine your <span className="text-white">personal studio</span> environment to complement your unique creative frequency.
-           </p>
+            <h2 className="text-5xl font-serif font-bold tracking-tighter text-textMain">Workspace Control</h2>
+            <p className="text-textMuted mt-4 text-lg italic max-w-xl leading-relaxed">
+              Refine your <span className="text-textMain">personal studio</span> environment to complement your unique creative frequency.
+            </p>
         </div>
         
         <button 
@@ -161,8 +162,8 @@ export default function Settings() {
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] transition-all whitespace-nowrap ${
               activeTab === tab.id 
-                ? 'bg-primary text-white shadow-xl shadow-primary/20 scale-[1.02]' 
-                : 'text-textMuted hover:text-white hover:bg-white/[0.02]'
+                ? 'bg-primary text-textMain shadow-xl shadow-primary/20 scale-[1.02]' 
+                : 'text-textMuted hover:text-textMain hover:bg-white/[0.02]'
             }`}
           >
             <tab.icon size={16} /> {tab.label}
@@ -191,12 +192,12 @@ export default function Settings() {
                          <img src={`https://ui-avatars.com/api/?name=${user?.username || 'U'}&background=random&color=white`} alt="Avatar" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                       </div>
                     </div>
-                    <button className="absolute -bottom-2 -right-2 w-12 h-12 rounded-2xl bg-white text-black shadow-2xl flex items-center justify-center hover:bg-primary hover:text-white transition-all transform hover:rotate-6">
+                    <button className="absolute -bottom-2 -right-2 w-12 h-12 rounded-2xl bg-white text-black shadow-2xl flex items-center justify-center hover:bg-primary hover:text-textMain transition-all transform hover:rotate-6">
                       <Camera size={20} />
                     </button>
                   </div>
                   <div className="text-center md:text-left">
-                     <h4 className="text-3xl font-serif font-bold mb-2 text-white tracking-tight">{user?.username}</h4>
+                     <h4 className="text-3xl font-serif font-bold mb-2 text-textMain tracking-tight">{user?.username}</h4>
                      <p className="text-base text-textMuted mb-4 italic">{user?.email}</p>
                      <div className="flex items-center gap-2 justify-center md:justify-start">
                         <span className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest border border-primary/20">Artisan Elite</span>
@@ -285,7 +286,7 @@ export default function Settings() {
                           <Smartphone size={22} />
                        </div>
                        <div>
-                          <p className="text-sm font-bold text-white uppercase tracking-widest">Master Browser Node</p>
+                          <p className="text-sm font-bold text-textMain uppercase tracking-widest">Master Browser Node</p>
                           <p className="text-[10px] text-textMuted uppercase font-bold mt-1">Status: Operational • Location: Mumbai, IN</p>
                        </div>
                     </div>
@@ -309,7 +310,7 @@ export default function Settings() {
                   <Cpu size={48} className="text-primary animate-pulse" />
                   <div className="absolute inset-0 bg-primary/5 blur-2xl rounded-full" />
                </div>
-               <h3 className="text-3xl font-serif font-bold mb-4 text-white">Engine Calibrations</h3>
+               <h3 className="text-3xl font-serif font-bold mb-4 text-textMain">Engine Calibrations</h3>
                <p className="max-w-md text-textMuted text-base leading-relaxed">
                   We are currently integrating the <span className="text-primary font-bold">Pollinations Pro</span> engine controls. You'll soon be able to fine-tune neural weights and model temperature.
                </p>
@@ -338,7 +339,7 @@ export default function Settings() {
                    </div>
                    
                    <div className="p-6 bg-white/[0.02] border border-white/[0.08] rounded-3xl">
-                      <h4 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                      <h4 className="text-lg font-bold text-textMain mb-2 flex items-center gap-2">
                         <Shield size={18} /> Content Integrity
                       </h4>
                       <p className="text-sm text-textMuted leading-relaxed">
@@ -347,7 +348,7 @@ export default function Settings() {
                    </div>
 
                    <div className="p-6 bg-white/[0.02] border border-white/[0.08] rounded-3xl">
-                      <h4 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                      <h4 className="text-lg font-bold text-textMain mb-2 flex items-center gap-2">
                         <Globe size={18} /> Global Resonance
                       </h4>
                       <p className="text-sm text-textMuted leading-relaxed">
@@ -367,9 +368,9 @@ export default function Settings() {
                className="py-24 flex flex-col items-center justify-center text-center opacity-40 px-6"
             >
                <div className="w-20 h-20 rounded-[32px] bg-white/[0.05] flex items-center justify-center mb-8 border border-white/[0.08]">
-                  <Palette size={40} className="text-white" />
+                  <Palette size={40} className="text-textMain" />
                </div>
-               <h3 className="text-2xl font-serif font-bold mb-3 text-white tracking-tight">Esthetic Lab</h3>
+               <h3 className="text-2xl font-serif font-bold mb-3 text-textMain tracking-tight">Esthetic Lab</h3>
                <p className="max-w-xs text-sm leading-relaxed mx-auto text-textMuted">
                   Customizing the visual frequency of the studio requires precise alignment. Coming soon.
                </p>
@@ -389,7 +390,7 @@ export default function Settings() {
          <button 
           onClick={handleExpunge}
           disabled={expunging}
-          className={`px-10 py-4 rounded-2xl bg-white/[0.03] border border-rose-500/30 text-rose-500 font-bold transition-all text-xs uppercase tracking-[0.2em] shadow-2xl ${expunging ? 'opacity-50 cursor-not-allowed' : 'hover:bg-rose-500 hover:text-white'}`}
+          className={`px-10 py-4 rounded-2xl bg-white/[0.03] border border-rose-500/30 text-rose-500 font-bold transition-all text-xs uppercase tracking-[0.2em] shadow-2xl ${expunging ? 'opacity-50 cursor-not-allowed' : 'hover:bg-rose-500 hover:text-textMain'}`}
          >
             {expunging ? 'Expunging...' : 'Expunge Space'}
          </button>

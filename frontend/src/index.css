@@ -1,15 +1,16 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @theme {
-  --color-app-bg: #030612;
-  --color-surface: #0f172a;
-  --color-primary: #8b5cf6;
-  --color-secondary: #ec4899;
-  --color-accent: #2dd4bf;
-  --color-textMain: #f8fafc;
-  --color-textMuted: #94a3b8;
+  --color-app-bg: #f3f5ff;
+  --color-surface: #ffffff;
+  --color-primary: #d83ae8;
+  --color-secondary: #ff5148;
+  --color-accent: #5267f9;
+  --color-textMain: #34364f;
+  --color-textMuted: #8b90a8;
   
-  --font-sans: "Outfit", "Inter", sans-serif;
+  --font-sans: "Inter", sans-serif;
   --font-serif: "Playfair Display", serif;
 
   @keyframes float {
@@ -33,33 +34,46 @@
 
 @layer components {
   .glass-card {
-    @apply bg-white/[0.02] backdrop-blur-3xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
+    @apply bg-white/85 backdrop-blur-3xl border border-white shadow-[0_18px_45px_rgba(79,90,150,0.14)];
     will-change: transform, opacity;
   }
 
   .glass-panel {
-    @apply bg-slate-950/20 backdrop-blur-3xl border border-white/[0.06] shadow-2xl;
+    @apply bg-white/90 backdrop-blur-3xl border border-white shadow-[0_18px_45px_rgba(79,90,150,0.14)];
     will-change: transform, opacity;
   }
 
+  /* Make sure white text remains readable when the parent panel becomes light
+     (for example on hover/active/focus states that apply light backgrounds). */
+  .group:hover .text-white,
+  .group:active .text-white,
+  .group:focus-within .text-white,
+  .group:hover [class*="text-white/"],
+  .group:active [class*="text-white/"],
+  .group:focus-within [class*="text-white/"] {
+    color: var(--color-textMain) !important;
+  }
+
   .premium-blur {
-    @apply fixed -inset-[10%] -z-10 blur-[100px] opacity-50;
+    @apply fixed -inset-[10%] -z-10 blur-[90px] opacity-80;
     background: 
-      radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 40%),
-      radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
+      radial-gradient(circle at 18% 18%, rgba(216, 58, 232, 0.14) 0%, transparent 38%),
+      radial-gradient(circle at 82% 20%, rgba(82, 103, 249, 0.12) 0%, transparent 36%),
+      radial-gradient(circle at 70% 86%, rgba(255, 81, 72, 0.1) 0%, transparent 35%);
   }
 
   .noise-overlay {
-    @apply fixed inset-0 opacity-[0.015] z-[9999] pointer-events-none;
+    @apply fixed inset-0 opacity-[0.018] z-[9999] pointer-events-none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   .btn-premium {
     @apply relative overflow-hidden px-8 py-3 rounded-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 text-white;
     background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    box-shadow: 0 16px 28px rgba(255, 81, 72, 0.24);
   }
 
-  .btn-premium:hover { @apply shadow-[0_0_30px_rgba(168,85,247,0.4)] -translate-y-0.5; }
+  .btn-premium:hover { @apply -translate-y-0.5; box-shadow: 0 20px 36px rgba(216,58,232,0.28); }
 
   .btn-premium::before {
     content: '';
@@ -69,7 +83,7 @@
   }
 
   .cursor-glow {
-    @apply fixed w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px] pointer-events-none z-[1] transition-transform duration-300 ease-out;
+    @apply fixed w-[360px] h-[360px] bg-primary/10 rounded-full blur-[100px] pointer-events-none z-[1] transition-transform duration-300 ease-out;
     transform: translate(-50%, -50%);
     mix-blend-mode: screen;
   }
@@ -77,6 +91,15 @@
   .cursor-blink {
     @apply inline-block w-0.5 h-6 bg-primary ml-1 align-middle animate-pulse;
   }
+
+  .soft-page-bg {
+    background:
+      radial-gradient(circle at 18% 0%, #dfe4ff 0 12%, transparent 13%),
+      radial-gradient(circle at 87% 6%, #dfe4ff 0 11%, transparent 12%),
+      radial-gradient(circle at 0% 78%, #dfe4ff 0 18%, transparent 19%),
+      radial-gradient(circle at 78% 84%, #e6e9ff 0 18%, transparent 19%);
+  }
+
 
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-thumb { @apply bg-white/10 rounded-full hover:bg-primary/40; }

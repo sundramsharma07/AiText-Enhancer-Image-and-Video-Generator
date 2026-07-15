@@ -16,6 +16,28 @@ router.get('/documents', protect, async (req, res) => {
     }
 });
 
+// Shared archive endpoint for every generator (poetry, shayari, cards, and media).
+router.post('/documents', protect, async (req, res) => {
+    try {
+        const { title, originalText, enhancedText, tone = 'Generated' } = req.body;
+        if (!title?.trim() || !originalText?.trim() || !enhancedText?.trim()) {
+            return res.status(400).json({ error: 'Title, source text, and generated result are required.' });
+        }
+
+        const document = await Document.create({
+            userId: req.user.id,
+            title: title.trim().slice(0, 120),
+            originalText: originalText.trim().slice(0, 10000),
+            enhancedText: enhancedText.trim().slice(0, 10000),
+            toneUsed: tone.trim().slice(0, 80)
+        });
+        res.status(201).json(document);
+    } catch (error) {
+        console.error('Generation history save failed:', error);
+        res.status(500).json({ error: 'Failed to save generation history.' });
+    }
+});
+
 // Route: Get real-time stats
 router.get('/stats', protect, async (req, res) => {
     try {

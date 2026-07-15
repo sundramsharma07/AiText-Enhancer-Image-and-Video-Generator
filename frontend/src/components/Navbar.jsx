@@ -41,8 +41,8 @@ export default function Navbar() {
                 <button onClick={logout} className="text-[10px] font-black uppercase tracking-widest text-rose-500 hover:text-rose-400 transition-colors">Exit</button>
               </div>
             ) : (
-              <Link to="/auth" className="text-[10px] font-black uppercase tracking-widest text-textMain hover:text-primary transition-colors px-4">
-                Infiltrate
+              <Link to="/auth" className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-textMain hover:text-primary transition-colors" title="Sign In">
+                <User size={18} />
               </Link>
             )}
             
@@ -84,7 +84,7 @@ export default function Navbar() {
               {isAuthenticated ? (
                 <button onClick={logout} className="text-rose-500 font-black uppercase tracking-widest text-sm text-left">Resign Session</button>
               ) : (
-                <Link to="/auth" onClick={() => setIsOpen(false)} className="text-primary font-black uppercase tracking-widest text-sm">Sign In</Link>
+                <Link to="/auth" onClick={() => setIsOpen(false)} className="text-primary font-black uppercase tracking-widest text-sm flex items-center gap-2"><User size={18} /> Sign In</Link>
               )}
             </div>
           </motion.div>
